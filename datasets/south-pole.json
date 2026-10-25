@@ -1,0 +1,80 @@
+{
+  "version": 2,
+  "checkedDate": "2026-10-17",
+  "name": "Shackleton south-pole pack",
+  "defaultRadiusMeters": 16000,
+  "defaultImageryMaxLevel": 13,
+  "defaultElevationMaxLevel": 13,
+  "imagery": [
+    {
+      "id": "south-nac-0450",
+      "title": "South pole controlled NAC average mosaic 0450",
+      "product": "NAC_POLE_SOUTH_CM_AVG_P892S0450",
+      "nativeResolutionMeters": 1,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_POLE/NAC_POLE_SOUTH_CM_AVG/NAC_POLE_SOUTH_CM_AVG_P892S0450.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_POLE_SOUTH_CM_AVG_P892S0450",
+      "expectedBytes": 2069522710,
+      "sourceETag": "\"22bb8770ac8c068ae17dceeec9464ef3\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; Archinal et al. (2023)"
+    },
+    {
+      "id": "south-nac-1350",
+      "title": "South pole controlled NAC average mosaic 1350",
+      "product": "NAC_POLE_SOUTH_CM_AVG_P892S1350",
+      "nativeResolutionMeters": 1,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_POLE/NAC_POLE_SOUTH_CM_AVG/NAC_POLE_SOUTH_CM_AVG_P892S1350.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_POLE_SOUTH_CM_AVG_P892S1350",
+      "expectedBytes": 2069522710,
+      "sourceETag": "\"ef26e80b4515dbb0af2cb8fa65eee3c2\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; Archinal et al. (2023)"
+    },
+    {
+      "id": "south-nac-2250",
+      "title": "South pole controlled NAC average mosaic 2250",
+      "product": "NAC_POLE_SOUTH_CM_AVG_P892S2250",
+      "nativeResolutionMeters": 1,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_POLE/NAC_POLE_SOUTH_CM_AVG/NAC_POLE_SOUTH_CM_AVG_P892S2250.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_POLE_SOUTH_CM_AVG_P892S2250",
+      "expectedBytes": 2069522710,
+      "sourceETag": "\"aff8fa8713eff9ba725a30e6a29de674\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; Archinal et al. (2023)"
+    },
+    {
+      "id": "south-nac-3150",
+      "title": "South pole controlled NAC average mosaic 3150",
+      "product": "NAC_POLE_SOUTH_CM_AVG_P892S3150",
+      "nativeResolutionMeters": 1,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_POLE/NAC_POLE_SOUTH_CM_AVG/NAC_POLE_SOUTH_CM_AVG_P892S3150.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_POLE_SOUTH_CM_AVG_P892S3150",
+      "expectedBytes": 2069522710,
+      "sourceETag": "\"2712e32ecee45484ace4110169a64ce7\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; Archinal et al. (2023)"
+    }
+  ],
+  "elevation": {
+    "id": "south-lola-5m",
+    "title": "LOLA 87\u201390 S elevation mosaic",
+    "nativeResolutionMeters": 5,
+    "sourceUrl": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/87S/ldem_87s_5mpp.tif",
+    "sourcePage": "https://pgda.gsfc.nasa.gov/products/81",
+    "expectedBytes": 3465285714,
+    "sourceETag": "W/\"ce8c1052-17c7ede95a8\"",
+    "sourceLastModified": "Thu, 14 Oct 2021 12:54:49 GMT",
+    "inputScale": 1,
+    "inputOffset": 0,
+    "credit": "NASA/GSFC / LOLA; Barker et al. (2021)"
+  },
+  "overview": {
+    "latitudeDeg": -90,
+    "longitudeDeg": 0,
+    "radiusMeters": 44000,
+    "imageryMaxLevel": 11,
+    "elevationMaxLevel": 11,
+    "featherMeters": 4000
+  },
+  "center": {
+    "latitudeDeg": -89.67,
+    "longitudeDeg": 129.78
+  },
+  "coordinateSource": "https://planetarynames.wr.usgs.gov/Feature/5450"
+}

@@ -1,0 +1,23 @@
+name: Check
+on: [push, pull_request]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.13.5"
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pytest
+      - run: uv build
+      - run: docker build --target tools -t tile-service-tools .
+      - run: docker run --rm tile-service-tools --version
+      - run: docker run --rm --entrypoint /app/.venv/bin/python -v "$PWD/tests/container_tools.py:/tmp/check.py:ro" tile-service-tools /tmp/check.py
+      - run: uv run python -m tests.make_release /tmp/tile-release
+      - run: TILE_ROOT=/tmp/tile-release docker compose up -d --build --wait
+      - run: TILE_TEST_URL=http://127.0.0.1:8787 uv run pytest -m deployment
+      - if: always()
+        run: docker compose logs && docker compose down

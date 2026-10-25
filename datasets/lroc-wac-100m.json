@@ -1,0 +1,24 @@
+{
+  "id": "lroc-wac-global-100m",
+  "title": "LROC WAC Global Morphology Mosaic, June 2013",
+  "sourceUrl": "https://planetarymaps.usgs.gov/mosaic/Lunar_LRO_LROC-WAC_Mosaic_global_100m_June2013.tif",
+  "sourcePage": "https://astrogeology.usgs.gov/search/map/moon_lro_lroc_wac_global_morphology_mosaic_100m",
+  "credit": "LROC Team / Arizona State University; USGS Astrogeology Science Center",
+  "sourceFile": "data/raw/moon/lroc-wac-global-100m.tif",
+  "radiusMeters": 1737400,
+  "nativeResolutionMeters": 100.0000418,
+  "coverage": {
+    "west": -180,
+    "east": 180,
+    "south": -90,
+    "north": 90
+  },
+  "quantity": "single-band morphology mosaic; illumination and shadows are present, not a pure albedo map",
+  "sourceProjection": "Simple Cylindrical, planetocentric latitude, east-positive longitude",
+  "sourceSizeNote": "Verified 5,959,263,751 bytes (5.55 GiB); generated tiles require additional disk space.",
+  "tileSize": 256,
+  "gutter": 2,
+  "maxLevel": 7,
+  "expectedBytes": 5959263751,
+  "sourceETag": "\"47d026c2618ee60e92eda4f2e0e5347b-711\""
+}

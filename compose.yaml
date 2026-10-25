@@ -1,0 +1,93 @@
+services:
+  objectstore:
+    # Optional emulator for publish-s3. Serving reads TILE_ROOT from disk.
+    # Start with: docker compose --profile s3 up -d
+    profiles: [s3]
+    image: motoserver/moto@sha256:120b1589c6df7e35d2092935f6ff724486bb2c4189d0e36ce795baba1400ffd2
+    ports:
+      - "127.0.0.1:${S3_PORT:-4566}:4566"
+    environment:
+      MOTO_PORT: "4566"
+      S3_IGNORE_SUBDOMAIN_BUCKETNAME: "true"
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:4566/', timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  seed:
+    profiles: [s3]
+    build:
+      context: .
+      target: tools
+    command: [seed-s3, --source, /release]
+    environment:
+      AWS_ENDPOINT_URL_S3: http://objectstore:4566
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+      TILE_BUCKET: ${TILE_BUCKET:-planet-tiles}
+      TILE_RELEASE: ${TILE_RELEASE:-local-v1}
+      TILE_S3_EMULATOR: ${TILE_S3_EMULATOR:-moto}
+    volumes:
+      - type: bind
+        source: ${TILE_ROOT:-./published}
+        target: /release
+        read_only: true
+        bind:
+          create_host_path: false
+    depends_on:
+      objectstore:
+        condition: service_healthy
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+
+  tiles:
+    build:
+      context: .
+      target: runtime
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${PORT:-8787}:8080"
+    environment:
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    volumes:
+      - type: bind
+        source: ${TILE_ROOT:-./published}
+        target: /srv
+        read_only: true
+        bind:
+          create_host_path: false
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  tools:
+    profiles: [tools]
+    build:
+      context: .
+      target: tools
+    user: "${LOCAL_UID:-1000}:${LOCAL_GID:-1000}"
+    volumes:
+      - ./data:/work/data
+      - ./public:/work/public
+      - ./datasets:/work/datasets:ro
+      - ./published:/work/published:ro
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]

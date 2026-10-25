@@ -1,0 +1,44 @@
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+:8080 {
+	log {
+		output stdout
+		format json
+	}
+	# The release directory is the mount. A restart keeps the files.
+	root * /srv
+	route {
+		header {
+			Access-Control-Allow-Origin "{$CORS_ORIGIN:*}"
+			Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+			Access-Control-Allow-Headers "Range, If-Match, If-None-Match"
+			Access-Control-Expose-Headers "Accept-Ranges, Content-Length, Content-Range, ETag"
+			defer
+		}
+		@preflight method OPTIONS
+		respond @preflight 204
+		@unsupported not method GET HEAD
+		respond @unsupported 405
+		respond /healthz "ok" 200
+		# Separate handles so the hashed archive cache policy is not overwritten.
+		@immutable path_regexp immutable -[a-f0-9]{64}\.pmtiles$
+		handle @immutable {
+			header >Cache-Control "public, max-age=31536000, immutable"
+			header >Content-Type application/vnd.pmtiles
+			file_server
+		}
+		handle {
+			header >Cache-Control "no-cache"
+			@archives path *.pmtiles
+			header @archives >Content-Type application/vnd.pmtiles
+			file_server
+		}
+	}
+	handle_errors {
+		respond "{err.status_text}" {err.status_code}
+	}
+}

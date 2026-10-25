@@ -1,0 +1,21 @@
+.env
+.env.*
+!.env.example
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+published/
+releases/
+.DS_Store
+__pycache__/
+*.pyc
+.terraform/
+*.tfstate*
+*.tfplan
+*.tfvars
+
+# Local toolchain, source rasters, and generated pyramids.
+.toolchains/
+data/
+public/data/

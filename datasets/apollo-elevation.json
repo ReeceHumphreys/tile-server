@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "checkedDate": "2026-10-17",
+  "sites": [
+    {
+      "id": "apollo11-dtm",
+      "name": "Apollo 11",
+      "product": "NAC_DTM_APOLLO11",
+      "nativeResolutionMeters": 2,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO11/NAC_DTM_APOLLO11.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO11",
+      "expectedBytes": 118142727,
+      "sourceETag": "\"a8596c0dd5e4da3ed8d9f03a94e0e3bd\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; heights in meters above 1737400 m sphere",
+      "latitudeDeg": 0.67416,
+      "longitudeDeg": 23.47314
+    },
+    {
+      "id": "apollo12-dtm",
+      "name": "Apollo 12",
+      "product": "NAC_DTM_APOLLO12",
+      "nativeResolutionMeters": 2,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO12/NAC_DTM_APOLLO12.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO12",
+      "expectedBytes": 13506631,
+      "sourceETag": "\"e274bb7b230479c96c909b7e906055f3\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; heights in meters above 1737400 m sphere",
+      "latitudeDeg": -3.0128,
+      "longitudeDeg": -23.4219
+    },
+    {
+      "id": "apollo14-dtm",
+      "name": "Apollo 14",
+      "product": "NAC_DTM_APOLLO14",
+      "nativeResolutionMeters": 2,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO14/NAC_DTM_APOLLO14.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO14",
+      "expectedBytes": 124301471,
+      "sourceETag": "\"391451c329c840a649094e4178cf67ae\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; heights in meters above 1737400 m sphere",
+      "latitudeDeg": -3.64589,
+      "longitudeDeg": -17.47194
+    },
+    {
+      "id": "apollo15-dtm",
+      "name": "Apollo 15",
+      "product": "NAC_DTM_APOLLO15",
+      "nativeResolutionMeters": 2,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO15/NAC_DTM_APOLLO15.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO15",
+      "expectedBytes": 146373579,
+      "sourceETag": "\"c258dbd373fe9c8d5451d99db22229de\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; heights in meters above 1737400 m sphere",
+      "latitudeDeg": 26.13239,
+      "longitudeDeg": 3.6333
+    },
+    {
+      "id": "apollo16-dtm",
+      "name": "Apollo 16",
+      "product": "NAC_DTM_APOLLO16",
+      "nativeResolutionMeters": 2,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO16/NAC_DTM_APOLLO16.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO16",
+      "expectedBytes": 750530715,
+      "sourceETag": "\"9844b1e53c339abb27681c67f35cf88f\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; heights in meters above 1737400 m sphere",
+      "latitudeDeg": -8.9734,
+      "longitudeDeg": 15.5011
+    },
+    {
+      "id": "apollo17-dtm",
+      "name": "Apollo 17",
+      "product": "NAC_DTM_APOLLO17",
+      "nativeResolutionMeters": 5,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/DATA/SDP/NAC_DTM/APOLLO17/NAC_DTM_APOLLO17.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO17",
+      "expectedBytes": 463397471,
+      "sourceETag": "\"bad9caf6deacda4a3aa5c5c9e33b6fe5\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC; heights in meters above 1737400 m sphere",
+      "latitudeDeg": 20.1911,
+      "longitudeDeg": 30.7723
+    }
+  ],
+  "coordinateFrame": "Mean Earth / polar axis, DE421; planetocentric degrees east",
+  "coordinateSource": "https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html"
+}

@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "checkedDate": "2026-10-18",
+  "sites": [
+    {
+      "id": "starbase",
+      "name": "Starbase",
+      "detail": "Orbital launch site. The production buildings about 3 km west are outside this disk.",
+      "latitudeDeg": 25.997,
+      "longitudeDeg": -97.157,
+      "radiusMeters": 2000,
+      "maxLevel": 16,
+      "nativeResolutionMeters": 0.6,
+      "product": "USDA NAIP 60 cm, 2022",
+      "sourcePage": "https://planetarycomputer.microsoft.com/dataset/naip",
+      "credit": "USDA Farm Service Agency National Agriculture Imagery Program (NAIP), public domain. Cloud-optimized GeoTIFF hosted by Microsoft Planetary Computer.",
+      "sources": [
+        {
+          "id": "tx_m_2609763_se_14_060_20220610",
+          "href": "https://naipeuwest.blob.core.windows.net/naip/v002/tx/2022/tx_060cm_2022/26097/m_2609763_se_14_060_20220610.tif",
+          "bbox": [-97.19101, 25.99646, -97.12097, 26.06653]
+        },
+        {
+          "id": "tx_m_2509707_ne_14_060_20220610",
+          "href": "https://naipeuwest.blob.core.windows.net/naip/v002/tx/2022/tx_060cm_2022/25097/m_2509707_ne_14_060_20220610.tif",
+          "bbox": [-97.191, 25.93446, -97.12099, 26.00353]
+        }
+      ]
+    },
+    {
+      "id": "ksc",
+      "name": "Kennedy Space Center",
+      "detail": "LC-39A. The Vehicle Assembly Building and LC-39B are outside this disk.",
+      "latitudeDeg": 28.608389,
+      "longitudeDeg": -80.604333,
+      "radiusMeters": 2000,
+      "maxLevel": 16,
+      "nativeResolutionMeters": 0.6,
+      "product": "USDA NAIP 60 cm, 2022",
+      "sourcePage": "https://planetarycomputer.microsoft.com/dataset/naip",
+      "credit": "USDA Farm Service Agency National Agriculture Imagery Program (NAIP), public domain. Cloud-optimized GeoTIFF hosted by Microsoft Planetary Computer.",
+      "sources": [
+        {
+          "id": "fl_m_2808028_nw_17_060_20220114",
+          "href": "https://naipeuwest.blob.core.windows.net/naip/v002/fl/2021/fl_060cm_2021/28080/m_2808028_nw_17_060_20220114.tif",
+          "bbox": [-80.62829, 28.56009, -80.55865, 28.6279]
+        }
+      ]
+    }
+  ]
+}

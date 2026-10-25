@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "checkedDate": "2026-10-17",
+  "sites": [
+    {
+      "id": "apollo11",
+      "name": "Apollo 11",
+      "product": "NAC_DTM_APOLLO11_M150361817_50CM",
+      "nativeResolutionMeters": 0.5,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_DTM/APOLLO11/NAC_DTM_APOLLO11_M150361817_50CM.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO11_M150361817_50CM",
+      "expectedBytes": 472311429,
+      "sourceETag": "\"bdafa4d91ee4a1ae5937c66793f5643a\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC",
+      "latitudeDeg": 0.67416,
+      "longitudeDeg": 23.47314
+    },
+    {
+      "id": "apollo12",
+      "name": "Apollo 12",
+      "product": "NAC_DTM_APOLLO12_M120005333_50CM",
+      "nativeResolutionMeters": 0.5,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_DTM/APOLLO12/NAC_DTM_APOLLO12_M120005333_50CM.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO12_M120005333_50CM",
+      "expectedBytes": 54000310,
+      "sourceETag": "\"c5bda5e79428468b3de61ca5bf184b7c\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC",
+      "latitudeDeg": -3.0128,
+      "longitudeDeg": -23.4219
+    },
+    {
+      "id": "apollo14",
+      "name": "Apollo 14",
+      "product": "NAC_DTM_APOLLO14_M150633128_50CM",
+      "nativeResolutionMeters": 0.5,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_DTM/APOLLO14/NAC_DTM_APOLLO14_M150633128_50CM.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO14_M150633128_50CM",
+      "expectedBytes": 497005356,
+      "sourceETag": "\"c9907be4d26fbed5ed6e32b3a296ed73\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC",
+      "latitudeDeg": -3.64589,
+      "longitudeDeg": -17.47194
+    },
+    {
+      "id": "apollo15",
+      "name": "Apollo 15",
+      "product": "NAC_DTM_APOLLO15_M111571816_50CM",
+      "nativeResolutionMeters": 0.5,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_DTM/APOLLO15/NAC_DTM_APOLLO15_M111571816_50CM.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO15_M111571816_50CM",
+      "expectedBytes": 585388015,
+      "sourceETag": "\"5845fcfb4bbc204b888300705ef52636\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC",
+      "latitudeDeg": 26.13239,
+      "longitudeDeg": 3.6333
+    },
+    {
+      "id": "apollo16",
+      "name": "Apollo 16",
+      "product": "NAC_DTM_APOLLO16_MOSAIC_50CM",
+      "nativeResolutionMeters": 0.5,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_DTM/APOLLO16/NAC_DTM_APOLLO16_MOSAIC_50CM.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO16_MOSAIC_50CM",
+      "expectedBytes": 2684759675,
+      "sourceETag": "\"ddd6a7a760861bc03393f8d6b6ef7353\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC",
+      "latitudeDeg": -8.9734,
+      "longitudeDeg": 15.5011
+    },
+    {
+      "id": "apollo17",
+      "name": "Apollo 17",
+      "product": "NAC_DTM_APOLLO17_MOSAIC_120CM",
+      "nativeResolutionMeters": 1.2,
+      "sourceUrl": "https://pds.lroc.im-ldi.com/data/LRO-L-LROC-5-RDR-V1.0/LROLRC_2001/EXTRAS/BROWSE/NAC_DTM/APOLLO17/NAC_DTM_APOLLO17_MOSAIC_120CM.TIF",
+      "sourcePage": "https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO17_MOSAIC_120CM",
+      "expectedBytes": 2010866955,
+      "sourceETag": "\"43d43c6b4080d18af729ee5b6f6b11af\"",
+      "credit": "NASA/GSFC/Arizona State University / LROC",
+      "latitudeDeg": 20.1911,
+      "longitudeDeg": 30.7723
+    }
+  ],
+  "coordinateFrame": "Mean Earth / polar axis, DE421; planetocentric degrees east",
+  "coordinateSource": "https://nssdc.gsfc.nasa.gov/planetary/lunar/lunar_sites.html"
+}

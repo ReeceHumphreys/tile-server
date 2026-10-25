@@ -1,0 +1,11 @@
+*
+!Dockerfile
+!Caddyfile
+!pyproject.toml
+!uv.lock
+!pipeline/
+!pipeline/**
+!datasets/
+!datasets/**
+**/__pycache__
+**/*.pyc

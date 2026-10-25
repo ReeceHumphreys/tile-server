@@ -1,0 +1,18 @@
+{
+  "id": "mars-mola-463m",
+  "body": "Mars",
+  "title": "MGS MOLA global elevation 463 m",
+  "sourceUrl": "https://planetarymaps.usgs.gov/mosaic/Mars_MGS_MOLA_DEM_mosaic_global_463m.tif",
+  "sourcePage": "https://astrogeology.usgs.gov/search/map/mars_mgs_mola_dem_463m",
+  "credit": "NASA GSFC / MOLA; USGS Astrogeology Science Center. Public domain.",
+  "sourceFile": "data/raw/mars/mars-mola-463m.tif",
+  "radiusMeters": 3396190,
+  "nativeResolutionMeters": 463,
+  "inputScale": 1,
+  "inputOffset": 0,
+  "nodata": -32768,
+  "quantity": "meters above the areoid, on the 3,396,190 m sphere",
+  "sourceSizeNote": "Verified 2,125,771,142 bytes (1.98 GiB). The globe keeps a 1.85 km grid, matching the Moon LOLA spacing.",
+  "expectedBytes": 2125771142,
+  "sourceETag": "\"cccf7001294ee9f503b13318eab83086-254\""
+}

@@ -1,0 +1,16 @@
+# Optional emulator: docker compose -f compose.yaml -f compose.localstack.yaml --profile s3 up -d
+services:
+  objectstore:
+    image: localstack/localstack@sha256:0e95fa70a58fff808cdc4c8deea8cf56a247cdad403c082e33ec37924987e0c3
+    environment:
+      LOCALSTACK_AUTH_TOKEN: ${LOCALSTACK_AUTH_TOKEN:?Set a LocalStack auth token in .env}
+      SERVICES: s3
+      PERSISTENCE: "1"
+    volumes:
+      - localstack-data:/var/lib/localstack
+  seed:
+    environment:
+      TILE_S3_EMULATOR: localstack
+
+volumes:
+  localstack-data:
