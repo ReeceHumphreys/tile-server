@@ -4,21 +4,16 @@ import sys
 import tempfile
 from pathlib import Path
 
-from pipeline.archives import pack_document
-from pipeline.publish import publish
-from pipeline.runtime import Args
 from tests.conftest import build, fixture
+from tile_service.releases import export, pack
 
 
 def main(output):
     with tempfile.TemporaryDirectory(prefix="tile-smoke-") as directory:
         root = Path(directory)
-        dataset = root / "build/moon/imagery"
-        build(fixture(root / "source.tif"), dataset)
-        pack_document(dataset / "manifest.json")
-        publish(
-            Args(["tile-service", "publish", "--root", str(root / "build"), "--output", output])
-        )
+        build(fixture(root / "source.tif"), root / "build/moon/imagery")
+        pack(root / "build")
+        export(root / "build", output)
 
 
 if __name__ == "__main__":

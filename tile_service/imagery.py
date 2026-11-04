@@ -1,3 +1,5 @@
+"""Global imagery: reproject a source raster into six guttered cube-face PNG pyramids."""
+
 import math
 import os
 import threading
@@ -7,72 +9,47 @@ from pathlib import Path
 import numpy as np
 import rasterio
 from rasterio.enums import ColorInterp, Resampling
+from rasterio.warp import reproject
 from rasterio.windows import Window
 
-from pipeline.runtime import (
-    Args,
+from tile_service import documents
+from tile_service.cube import face_crs, pyramid, tile_affine
+from tile_service.records import BuildRecord, pick
+from tile_service.runtime import (
     atomic_json,
     check,
-    config,
-    face_crs,
     gdal_version,
     log,
     read_json,
     sha256,
     stop,
-    tile_affine,
-    validate_source,
+    validate_imagery,
     write_png,
 )
+from tile_service.tile_store import TileStore
 
-MANIFEST = {
-    "version": 1,
-    "body": "Moon",
-    "projection": "normalized-cube",
-    "faces": [
-        {"id": 0, "name": "+X", "normal": [1, 0, 0], "uAxis": [0, 0, -1], "vAxis": [0, 1, 0]},
-        {"id": 1, "name": "-X", "normal": [-1, 0, 0], "uAxis": [0, 0, 1], "vAxis": [0, 1, 0]},
-        {"id": 2, "name": "+Y", "normal": [0, 1, 0], "uAxis": [1, 0, 0], "vAxis": [0, 0, -1]},
-        {"id": 3, "name": "-Y", "normal": [0, -1, 0], "uAxis": [1, 0, 0], "vAxis": [0, 0, 1]},
-        {"id": 4, "name": "+Z", "normal": [0, 0, 1], "uAxis": [1, 0, 0], "vAxis": [0, 1, 0]},
-        {"id": 5, "name": "-Z", "normal": [0, 0, -1], "uAxis": [-1, 0, 0], "vAxis": [0, 1, 0]},
-    ],
-    "axes": {"north": "+Y", "longitude0": "+X", "longitude90East": "-Z"},
-    "addressing": {
-        "origin": "bottom-left in face-local UV",
-        "yDirection": "up",
-        "template": "{face}/{level}/{x}/{y}.png",
-    },
-    "imageRowOrder": "top-to-bottom",
-    "textureFlipY": True,
-    "minLevel": 0,
-    "format": "png",
-    "channels": "RGBA",
-    "noData": "alpha=0; retain coarser imagery underneath",
-    "colorSpace": "srgb",
-    "resampling": "average",
-    "sampler": {
-        "minFilter": "linear",
-        "magFilter": "linear",
-        "generateMipmaps": False,
-        "anisotropy": 1,
-        "wrapS": "clamp-to-edge",
-        "wrapT": "clamp-to-edge",
-    },
-}
+PIPELINE_VERSION = 3
 
 
 def _tile_path(out, face, level, x, y):
     return out / str(face) / str(level) / str(x) / f"{y}.png"
 
 
+def _tiles(level):
+    return (f"{face}/{depth}/{x}/{y}.png" for face in range(6) for depth, x, y in pyramid(level))
+
+
+def _available(out, manifest, level):
+    """Every tile exists, loose or in the manifest's packed archives."""
+    store = TileStore(out, manifest.get("storage"))
+    try:
+        return all(store.has(tile) for tile in _tiles(level))
+    finally:
+        store.close()
+
+
 def _complete(out, face, level):
-    for depth in range(level + 1):
-        for y in range(1 << depth):
-            for x in range(1 << depth):
-                if not _tile_path(out, face, depth, x, y).exists():
-                    return False
-    return True
+    return all(_tile_path(out, face, *address).exists() for address in pyramid(level))
 
 
 def _fill_holes(dataset, src, bands, width, crs, transform):
@@ -97,8 +74,6 @@ def _fill_holes(dataset, src, bands, width, crs, transform):
                 transform.f + x * transform.d + y * transform.e,
             )
             fallback = np.zeros((bands + 1, window_height, window_width), np.uint8)
-            from rasterio.warp import reproject
-
             reproject(
                 source=rasterio.band(src, list(range(1, bands + 1))),
                 destination=fallback,
@@ -157,8 +132,6 @@ def _prepare_face(src, path, face, bands, settings):
         if bands == 3:
             colors = [ColorInterp.red, ColorInterp.green, ColorInterp.blue, ColorInterp.alpha]
         dest.colorinterp = tuple(colors)
-        from rasterio.warp import reproject
-
         reproject(
             source=rasterio.band(src, list(range(1, bands + 1))),
             destination=rasterio.band(dest, list(range(1, bands + 2))),
@@ -170,13 +143,15 @@ def _prepare_face(src, path, face, bands, settings):
         )
         _fill_holes(dest, src, bands, width, crs, transform)
     check()
-    os.replace(temp, path)
+    # Overviews come first: a cache under its final name is trusted on resume.
     if settings["level"]:
-        with rasterio.open(path, "r+") as dest:
+        with rasterio.open(temp, "r+") as dest:
             dest.build_overviews(
                 [1 << i for i in range(1, settings["level"] + 1)],
                 Resampling.average,
             )
+    check()
+    os.replace(temp, path)
 
 
 def _extract(cache, path, level, x, y, bands, settings):
@@ -215,33 +190,31 @@ def _source_metadata(src, digest, source):
     }
 
 
-def tiles(args: Args):
-    args.validate(
-        {
-            "--config",
-            "--source",
-            "--output",
-            "--tile-size",
-            "--gutter",
-            "--max-level",
-            "--strategy",
-            "--png-compression",
-            "--jobs",
-            "--keep-cache",
-        }
-    )
-    source = config(args)
-    src_path = args.get("--source", source.get("sourceFile", ""))
-    out = Path(args.get("--output", "public/data/moon/wac"))
+def build(
+    source,
+    out,
+    dataset,
+    *,
+    tile_size=None,
+    gutter=None,
+    max_level=None,
+    jobs=2,
+    png_compression=3,
+    keep_cache=False,
+):
+    """Build (or resume) a cube pyramid of `source` described by `dataset` into `out`.
+
+    Tile size, gutter and depth default to the dataset's. Returns the manifest.
+    """
+    source, out = Path(source), Path(out)
     settings = {
-        "size": args.integer("--tile-size", int(source.get("tileSize") or 0)),
-        "gutter": args.integer("--gutter", int(source.get("gutter") or 0)),
-        "level": args.integer("--max-level", int(source.get("maxLevel") or 0)),
-        "jobs": args.integer("--jobs", 2),
-        "compression": args.integer("--png-compression", 3),
-        "keep": args.has("--keep-cache"),
-        "strategy": args.get("--strategy", "cached"),
-        "radius": float(source.get("radiusMeters") or 0),
+        "size": int(tile_size if tile_size is not None else dataset.get("tileSize") or 0),
+        "gutter": int(gutter if gutter is not None else dataset.get("gutter") or 0),
+        "level": int(max_level if max_level is not None else dataset.get("maxLevel") or 0),
+        "jobs": jobs,
+        "compression": png_compression,
+        "keep": keep_cache,
+        "radius": float(dataset.get("radiusMeters") or 0),
     }
     size = settings["size"]
     if not (
@@ -251,63 +224,40 @@ def tiles(args: Args):
         and 0 <= settings["level"] <= 12
     ):
         raise RuntimeError("Use power-of-two tile size 16..2048, gutter 1..16, max level 0..12")
-    if not 1 <= settings["jobs"] <= 6:
+    if not (isinstance(jobs, int) and 1 <= jobs <= 6):
         raise RuntimeError("Jobs must be 1..6")
-    if not 0 <= settings["compression"] <= 9 or settings["strategy"] != "cached":
-        raise RuntimeError("Use --strategy cached and PNG compression 0..9")
+    if not 0 <= png_compression <= 9:
+        raise RuntimeError("PNG compression must be 0..9")
     if not math.isfinite(settings["radius"]) or settings["radius"] <= 0:
         raise RuntimeError("Invalid body radius")
-    with rasterio.open(src_path) as src:
-        validate_source(src, settings["radius"])
+    with rasterio.open(source) as src:
+        validate_imagery(src, settings["radius"])
         bands = src.count
         log("Validating source SHA-256…")
-        digest = sha256(src_path)
-        metadata = _source_metadata(src, digest, source)
+        digest = sha256(source)
+        metadata = _source_metadata(src, digest, dataset)
     identity = {
-        "pipelineVersion": 3,
+        "pipelineVersion": PIPELINE_VERSION,
         "gdal": gdal_version(),
-        "dataset": source,
         "sourceSha256": digest,
-        "tileSize": settings["size"],
+        "radiusMeters": settings["radius"],
+        "tileSize": size,
         "gutter": settings["gutter"],
         "maxLevel": settings["level"],
-        "strategy": settings["strategy"],
-        "pngCompression": settings["compression"],
+        "pngCompression": png_compression,
     }
-    out.mkdir(parents=True, exist_ok=True)
-    state = out / "build-state.json"
-    legacy = False
-    if state.exists():
-        old = read_json(state)
-        if old != identity:
-            legacy = (
-                old.get("pipelineVersion") == 2
-                and old.get("sourceSha256") == digest
-                and old.get("tileSize") == settings["size"]
-                and old.get("gutter") == settings["gutter"]
-                and old.get("maxLevel") == settings["level"]
-                and old.get("dataset") == source
-                and (out / "manifest.json").exists()
-            )
-            if not legacy:
-                raise RuntimeError(
-                    "Output belongs to another source/settings/toolchain. "
-                    "Choose a new --output directory."
-                )
-    elif any(out.iterdir()):
-        raise RuntimeError("Nonempty output without build-state.json; choose a new directory")
-    else:
-        atomic_json(state, identity)
-    if legacy:
-        for face in range(6):
-            if not _complete(out, face, settings["level"]):
-                raise RuntimeError(
-                    "Legacy dataset is incomplete; rebuild into a new --output directory."
-                )
+    record = BuildRecord(out, identity, upgrades=(_from_dataset_record, _from_v2(out)))
+    manifest_path = out / "manifest.json"
+    if record.previous and record.previous.get("pipelineVersion") == 2:
+        if not _available(out, read_json(manifest_path), settings["level"]):
+            raise RuntimeError("Legacy dataset is incomplete; rebuild into a new output directory.")
         log("Verified complete legacy pyramid; retained unchanged.")
-        return
+        return read_json(manifest_path)
+    if manifest_path.exists() and _available(out, read_json(manifest_path), settings["level"]):
+        log(f"Up to date: {out}")
+        return _refresh(manifest_path, _manifest(dataset, settings, metadata, png_compression))
     count = 2 * ((1 << (2 * (settings["level"] + 1))) - 1)
-    log(f"{count} tiles; {settings['jobs']} face workers.")
+    log(f"{count} tiles; {jobs} face workers.")
     errors = []
     lock = threading.Lock()
 
@@ -317,16 +267,14 @@ def tiles(args: Args):
             cached = out / ".cache" / f"{face}.tif"
             if not _complete(out, face, settings["level"]):
                 log(f"Reprojecting face {face}")
-                with rasterio.open(src_path) as src:
+                with rasterio.open(source) as src:
                     _prepare_face(src, cached, face, bands, settings)
                     with rasterio.open(cached) as cache:
-                        for level in range(settings["level"] + 1):
-                            for y in range(1 << level):
-                                for x in range(1 << level):
-                                    check()
-                                    path = _tile_path(out, face, level, x, y)
-                                    if not path.exists():
-                                        _extract(cache, path, level, x, y, bands, settings)
+                        for level, x, y in pyramid(settings["level"]):
+                            check()
+                            path = _tile_path(out, face, level, x, y)
+                            if not path.exists():
+                                _extract(cache, path, level, x, y, bands, settings)
             if not settings["keep"]:
                 cached.unlink(missing_ok=True)
             log(f"Face {face} ready")
@@ -336,38 +284,78 @@ def tiles(args: Args):
                 if not errors:
                     errors.append(exc)
 
-    with ThreadPoolExecutor(max_workers=settings["jobs"]) as pool:
+    with ThreadPoolExecutor(max_workers=jobs) as pool:
         list(pool.map(run_face, range(6)))
     if errors:
+        stop.clear()  # It only stopped this build's faces.
         raise errors[0]
     check()
-    manifest = dict(MANIFEST)
-    for key in ("id", "title", "coverage", "nativeResolutionMeters", "quantity"):
-        manifest[key] = source.get(key)
-    manifest.update(
-        {
-            "radiusMeters": settings["radius"],
-            "body": source.get("body") or "Moon",
-            "tileSize": settings["size"],
-            "gutter": settings["gutter"],
-            "imageSize": settings["size"] + 2 * settings["gutter"],
-            "maxLevel": settings["level"],
-            "tileCount": count,
-            "textureUV": {
-                "offset": settings["gutter"] / (settings["size"] + 2 * settings["gutter"]),
-                "scale": settings["size"] / (settings["size"] + 2 * settings["gutter"]),
-            },
-            "faceCenterMetersPerPixelAtMaxLevel": 2
-            * settings["radius"]
-            / (settings["size"] * (1 << settings["level"])),
-            "source": metadata,
-            "pipelineVersion": 3,
-            "toolchain": {"implementation": "Python", "gdal": gdal_version()},
-            "generation": {
-                "strategy": settings["strategy"],
-                "pngCompression": settings["compression"],
-            },
-        }
+    manifest = _manifest(dataset, settings, metadata, png_compression)
+    atomic_json(manifest_path, manifest)
+    log(f"Published {manifest_path}")
+    return manifest
+
+
+def _manifest(dataset, settings, metadata, png_compression):
+    manifest = documents.imagery_manifest(
+        dataset,
+        radius=settings["radius"],
+        tile_size=settings["size"],
+        gutter=settings["gutter"],
+        max_level=settings["level"],
+        source=metadata,
+        generation={"strategy": "cached", "pngCompression": png_compression},
+        toolchain={"pipelineVersion": PIPELINE_VERSION, "gdal": gdal_version()},
     )
-    atomic_json(out / "manifest.json", manifest)
-    log(f"Published {out / 'manifest.json'}")
+    documents.validate(manifest)
+    return manifest
+
+
+# Fields that name a PMTiles archive; while they hold, packed archives stay valid.
+ARCHIVE_KEYS = ("body", "radiusMeters", "id", "format")
+
+
+def _refresh(path, manifest):
+    """Republish provenance on a finished pyramid; tiles and archives are untouched."""
+    old = read_json(path)
+    storage = old.pop("storage", None)
+    if old == manifest:
+        return read_json(path)
+    if storage and all(old.get(key) == manifest.get(key) for key in ARCHIVE_KEYS):
+        manifest["storage"] = storage
+    elif storage:
+        # These archives are retired, so the next pack needs every loose tile.
+        TileStore(path.parent, storage).restore(_tiles(manifest["maxLevel"]))
+    atomic_json(path, manifest)
+    log(f"Republished provenance in {path}")
+    return manifest
+
+
+def _from_dataset_record(old):
+    """Version-3 records embedded the whole dataset description."""
+    if old.get("pipelineVersion") != PIPELINE_VERSION or "dataset" not in old:
+        return None
+    upgraded = pick(old, ("pipelineVersion", "gdal", "sourceSha256"))
+    upgraded["radiusMeters"] = float(old["dataset"].get("radiusMeters") or 0)
+    upgraded.update(pick(old, ("tileSize", "gutter", "maxLevel", "pngCompression")))
+    return upgraded
+
+
+def _from_v2(out):
+    """Version-2 pyramids are pixel-compatible, but only accepted when finished."""
+
+    def upgrade(old):
+        if old.get("pipelineVersion") != 2 or not (out / "manifest.json").exists():
+            return None
+        return {
+            "pipelineVersion": PIPELINE_VERSION,
+            "gdal": gdal_version(),
+            "sourceSha256": old.get("sourceSha256"),
+            "radiusMeters": float(old.get("dataset", {}).get("radiusMeters") or 0),
+            "tileSize": old.get("tileSize"),
+            "gutter": old.get("gutter"),
+            "maxLevel": old.get("maxLevel"),
+            "pngCompression": old.get("pngCompression", 3),
+        }
+
+    return upgrade

@@ -1,0 +1,40 @@
+{
+  "version": 3,
+  "checkedDate": "2026-10-17",
+  "coordinateSource": "https://planetarynames.wr.usgs.gov/Feature/5450",
+  "sites": [
+    {
+      "id": "south-pole-lola-v2",
+      "name": "South pole and Shackleton crater",
+      "latitudeDeg": -89.67,
+      "longitudeDeg": 129.78,
+      "radiusMeters": 16000,
+      "maxLevel": 13,
+      "overview": {
+        "latitudeDeg": -90,
+        "longitudeDeg": 0,
+        "radiusMeters": 44000,
+        "maxLevel": 11
+      },
+      "featherMeters": 4000,
+      "nativeResolutionMeters": 5,
+      "credit": "NASA/GSFC / LOLA; Barker et al. (2021)",
+      "sourcePage": "https://pgda.gsfc.nasa.gov/products/81",
+      "source": {
+        "type": "download",
+        "raw": "moon/polar",
+        "id": "south-lola-5m",
+        "title": "LOLA 87–90 S elevation mosaic",
+        "nativeResolutionMeters": 5,
+        "sourceUrl": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/87S/ldem_87s_5mpp.tif",
+        "sourcePage": "https://pgda.gsfc.nasa.gov/products/81",
+        "expectedBytes": 3465285714,
+        "sourceETag": "W/\"ce8c1052-17c7ede95a8\"",
+        "sourceLastModified": "Thu, 14 Oct 2021 12:54:49 GMT",
+        "inputScale": 1,
+        "inputOffset": 0,
+        "credit": "NASA/GSFC / LOLA; Barker et al. (2021)"
+      }
+    }
+  ]
+}

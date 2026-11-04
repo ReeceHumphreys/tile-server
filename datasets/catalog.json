@@ -1,0 +1,124 @@
+{
+  "version": 2,
+  "targets": {
+    "moon/wac": {
+      "layer": "imagery",
+      "source": {
+        "type": "download",
+        "dataset": "lroc-wac-100m.json"
+      },
+      "description": "Global LROC WAC morphology imagery"
+    },
+    "moon/elevation": {
+      "layer": "grid",
+      "source": {
+        "type": "download",
+        "dataset": "moon-lola-ldem16.json"
+      },
+      "description": "Global LOLA elevation grid"
+    },
+    "moon/elevation-tiles": {
+      "layer": "heights",
+      "grid": "moon/elevation",
+      "tileSize": 128,
+      "maxLevel": 4,
+      "description": "Global lunar height tiles"
+    },
+    "moon/apollo": {
+      "layer": "imagery-regions",
+      "base": "moon/wac",
+      "sites": "apollo-nac.json",
+      "source": {
+        "type": "download",
+        "raw": "moon/apollo"
+      },
+      "radiusMeters": 2000,
+      "description": "Apollo landing-site NAC imagery over moon/wac"
+    },
+    "moon/apollo-elevation": {
+      "layer": "height-regions",
+      "base": "moon/elevation-tiles",
+      "sites": "apollo-elevation.json",
+      "source": {
+        "type": "download",
+        "raw": "moon/apollo"
+      },
+      "radiusMeters": 2000,
+      "description": "Apollo landing-site NAC DTMs into moon/elevation-tiles"
+    },
+    "moon/south-pole-imagery": {
+      "layer": "imagery-regions",
+      "base": "moon/wac",
+      "output": "moon/apollo",
+      "sites": "south-pole-nac.json",
+      "description": "Shackleton and south-pole NAC mosaic into moon/apollo"
+    },
+    "moon/south-pole-elevation": {
+      "layer": "height-regions",
+      "base": "moon/elevation-tiles",
+      "sites": "south-pole-lola.json",
+      "description": "South-pole LOLA 5 m elevation into moon/elevation-tiles"
+    },
+    "mars/viking": {
+      "layer": "imagery",
+      "source": {
+        "type": "download",
+        "dataset": "mars-viking-mdim21-232m.json"
+      },
+      "description": "Global Viking MDIM 2.1 color imagery"
+    },
+    "mars/elevation": {
+      "layer": "grid",
+      "source": {
+        "type": "download",
+        "dataset": "mars-mola-463m.json"
+      },
+      "width": 11520,
+      "height": 5760,
+      "description": "Global MOLA elevation grid"
+    },
+    "mars/elevation-tiles": {
+      "layer": "heights",
+      "grid": "mars/elevation",
+      "tileSize": 128,
+      "maxLevel": 5,
+      "description": "Global Mars height tiles"
+    },
+    "earth/s2cloudless-2020-z7": {
+      "layer": "imagery",
+      "source": {
+        "type": "wmts",
+        "dataset": "s2cloudless-2020.json",
+        "zoom": 7
+      },
+      "description": "Global EOxCloudless 2020 imagery"
+    },
+    "earth/elevation": {
+      "layer": "grid",
+      "source": {
+        "type": "download",
+        "dataset": "earth-etopo-2022.json"
+      },
+      "width": 16384,
+      "height": 8192,
+      "geographic": true,
+      "description": "Global ETOPO 2022 elevation grid"
+    },
+    "earth/elevation-tiles": {
+      "layer": "heights",
+      "grid": "earth/elevation",
+      "tileSize": 128,
+      "maxLevel": 5,
+      "description": "Global Earth height tiles"
+    },
+    "earth/sites": {
+      "layer": "imagery-regions",
+      "base": "earth/s2cloudless-2020-z7",
+      "sites": "earth-sites.json",
+      "source": {
+        "type": "naip"
+      },
+      "description": "Launch-site NAIP imagery over earth/s2cloudless-2020-z7"
+    }
+  }
+}

@@ -5,7 +5,7 @@
   "sourceUrl": "https://planetarymaps.usgs.gov/mosaic/Mars_Viking_MDIM21_ClrMosaic_global_232m.tif",
   "sourcePage": "https://astrogeology.usgs.gov/search/map/mars_viking_colorized_global_mosaic_232m",
   "credit": "NASA Ames; USGS Astrogeology Science Center. Public domain.",
-  "sourceFile": "data/raw/mars/mars-viking-mdim21-232m.tif",
+  "sourceFile": "mars/mars-viking-mdim21-232m.tif",
   "radiusMeters": 3396190,
   "nativeResolutionMeters": 231.5417872,
   "coverage": {

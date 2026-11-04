@@ -1,0 +1,14 @@
+{
+  "id": "etopo-2022-60s-surface",
+  "body": "Earth",
+  "title": "ETOPO 2022 60 arc-second ice surface",
+  "sourceUrl": "https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO2022/data/60s/60s_surface_elev_gtif/ETOPO_2022_v1_60s_N90W180_surface.tif",
+  "sourcePage": "https://www.ncei.noaa.gov/products/etopo-global-relief-model",
+  "credit": "NOAA National Centers for Environmental Information. 2022: ETOPO 2022 15 Arc-Second Global Relief Model, 60 arc-second ice surface. DOI: 10.25921/fd45-gt74. Samples outside -10000 to 22767.5 m are clamped.",
+  "sourceFile": "earth/ETOPO_2022_v1_60s_N90W180_surface.tif",
+  "radiusMeters": 6378137,
+  "expectedBytes": 465969062,
+  "sha256": "9d27d4b8ea8e76977e2988bca667d7c8fa68b927355feffcddd6b4875a7fd08e",
+  "sourceSizeNote": "Verified 2026-10-18: 465,969,062 bytes.",
+  "quantity": "meters above EGM2008, placed on the 6,378,137 m sphere as a visualization convention"
+}

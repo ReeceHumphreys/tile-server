@@ -1,0 +1,14 @@
+{
+  "id": "lola-ldem-16",
+  "body": "Moon",
+  "title": "LRO LOLA global elevation, 16 pixels per degree (NASA SVS 4720)",
+  "sourceUrl": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/ldem_16_uint.tif",
+  "sourcePage": "https://svs.gsfc.nasa.gov/4720/",
+  "credit": "NASA SVS / LRO / LOLA; Ernie Wright",
+  "sourceFile": "moon/ldem_16_uint.tif",
+  "radiusMeters": 1737400,
+  "expectedBytes": 33201026,
+  "sha256": "45a2b32d56e81ed30db07fead8abc842b249b6511219d9ca2c53f81bc2dc5d62",
+  "quantity": "uint16 heights already in the shared encoding: value * 0.5 - 10000 m",
+  "encoded": true
+}

@@ -5,7 +5,7 @@
   "sourceUrl": "https://tiles.maps.eox.at/wmts/1.0.0/WMTSCapabilities.xml",
   "sourcePage": "https://cloudless.eox.at/",
   "credit": "EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2020). CC BY-NC-SA 4.0.",
-  "sourceFile": "data/raw/earth/s2cloudless-2020-z7.tif",
+  "sourceFile": "earth/s2cloudless-2020-z7.tif",
   "radiusMeters": 6378137,
   "nativeResolutionMeters": 611.49622628141,
   "coverage": {

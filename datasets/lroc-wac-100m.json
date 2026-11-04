@@ -4,7 +4,7 @@
   "sourceUrl": "https://planetarymaps.usgs.gov/mosaic/Lunar_LRO_LROC-WAC_Mosaic_global_100m_June2013.tif",
   "sourcePage": "https://astrogeology.usgs.gov/search/map/moon_lro_lroc_wac_global_morphology_mosaic_100m",
   "credit": "LROC Team / Arizona State University; USGS Astrogeology Science Center",
-  "sourceFile": "data/raw/moon/lroc-wac-global-100m.tif",
+  "sourceFile": "moon/lroc-wac-global-100m.tif",
   "radiusMeters": 1737400,
   "nativeResolutionMeters": 100.0000418,
   "coverage": {

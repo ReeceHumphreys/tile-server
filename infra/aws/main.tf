@@ -27,7 +27,7 @@ variable "bucket_name" {
 
 variable "release_id" {
   type        = string
-  description = "Immutable release uploaded with tile-service publish-s3 --release."
+  description = "Immutable release uploaded with tile-service upload --release."
   validation {
     condition     = can(regex("^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$", var.release_id))
     error_message = "Use a safe, unique release identifier."

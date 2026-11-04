@@ -9,16 +9,17 @@ If the tiled manifest is missing, the legacy LOLA/Wasm path remains available.
 ## Prepare the coarse globe
 
 ```sh
-uv run tile-service elevation
-uv run tile-service height-tiles
+uv run tile-service build moon/elevation moon/elevation-tiles
 ```
 
-The second command converts the prepared LOLA grid into cube-face uint16 tiles.
+`moon/elevation` downloads the pinned NASA LOLA grid; `moon/elevation-tiles`
+converts it into cube-face uint16 tiles.
 Default core size is 128, gutter is 2, and the complete global pyramid ends at
 level 4: 2,046 files, approximately 68 MiB of uncompressed samples on disk.
 This preserves the source's broad relief rather than inventing higher resolution.
-`--tile-size 16..256`, `--gutter 2..8`, `--max-level 0..5`, `--source` and `--output`
-can change this baseline. An output directory belongs to one set of settings.
+`tileSize` and `maxLevel` (0..5) live in `datasets/catalog.json`; `--max-level`
+and `--output` override them for one build. An output directory belongs to one
+set of settings.
 Atomic files make interrupted builds resumable. Rebuilding an already populated
 base preserves published regional refinements.
 
@@ -31,13 +32,12 @@ reference sphere. The quantization step is 0.5 m; it is not centimeter terrain.
 ## Add Apollo terrain
 
 ```sh
-uv run tile-service apollo --elevation --list
-uv run tile-service apollo --elevation --site apollo12 --info
-uv run tile-service apollo --elevation --site apollo12
-uv run tile-service apollo --elevation --site all
+uv run tile-service build moon/apollo-elevation --dry-run
+uv run tile-service build moon/apollo-elevation --site apollo12-dtm
+uv run tile-service build moon/apollo-elevation   # every site
 ```
 
-These download numeric DTMs, separately from `data:apollo`'s photographs. The
+These download numeric DTMs, separately from the `moon/apollo` photographs. The
 [LROC Apollo 12 DTM](https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO12)
 is a 2 m/pixel, 32-bit GeoTIFF, about 12.9 MiB. Apollo 11–16 DTMs have 2 m sampling;
 Apollo 17's mosaic has 5 m sampling. `datasets/apollo-elevation.json` contains the
@@ -53,7 +53,7 @@ Both fine photographs and fine height geometry can now load for that location.
 
 ## Import SLDEM or another local numeric raster
 
-`height-region` reads GDAL raster windows and writes only a bounded patch. It does
+A height region reads GDAL raster windows and writes only a bounded patch. It does
 not allocate the full source raster in the browser. The input needs a lunar CRS
 with a 1,737,400 m sphere, one numeric band, and correct nodata metadata.
 The explicit input scale/offset convert raw samples to meters above that sphere;
@@ -62,16 +62,25 @@ heights. Heights outside the common encoding range are rejected.
 
 For an SLDEM2015 JP2 covering Apollo 15, an example is:
 
-```sh
-uv run tile-service height-region \
-  --source /path/SLDEM2015_512_00N_30N_000_045.JP2 \
-  --id sldem-apollo15 \
-  --latitude 26.13239 --longitude 3.63330 \
-  --radius-meters 20000 --max-level 9 \
-  --input-scale 0.5 --input-offset 0 \
-  --credit 'NASA GSFC/MIT/JAXA SLDEM2015' \
-  --source-page https://pgda.gsfc.nasa.gov/products/54
+```python
+from tile_service import heights
+
+heights.add_region(
+    "public/data/moon/elevation-tiles",
+    "/path/SLDEM2015_512_00N_30N_000_045.JP2",
+    "sldem-apollo15",
+    26.13239,
+    3.63330,
+    20000,
+    max_level=9,
+    input_scale=0.5,
+    credit="NASA GSFC/MIT/JAXA SLDEM2015",
+    source_page="https://pgda.gsfc.nasa.gov/products/54",
+)
 ```
+
+Run it with `uv run python`. A source worth keeping belongs in a sites file
+referenced by a `height-regions` target in `datasets/catalog.json`.
 
 The official JP2's [auxiliary metadata](https://imbrium.mit.edu/EXTRAS/SLDEM2015/TILES/JP2/SLDEM2015_512_00N_30N_000_045_AUX.XML)
 specifies a 0.5 scale and -32768 nodata. Its

@@ -1,6 +1,6 @@
 services:
   objectstore:
-    # Optional emulator for publish-s3. Serving reads TILE_ROOT from disk.
+    # Optional emulator for `tile-service upload`. Serving reads TILE_ROOT from disk.
     # Start with: docker compose --profile s3 up -d
     profiles: [s3]
     image: motoserver/moto@sha256:120b1589c6df7e35d2092935f6ff724486bb2c4189d0e36ce795baba1400ffd2
@@ -26,7 +26,7 @@ services:
     build:
       context: .
       target: tools
-    command: [seed-s3, --source, /release]
+    command: [upload, /release, --local]
     environment:
       AWS_ENDPOINT_URL_S3: http://objectstore:4566
       AWS_ACCESS_KEY_ID: test

@@ -4,39 +4,44 @@ The viewer ships with the 2K overview image. WAC tiles and the LOLA elevation gr
 
 ## Tools
 
-Use Python 3.12+, uv, and curl. The offline tool is the installable `pipeline` package. Rasterio supplies GDAL for projection, resampling, TIFF caching, and PNG encoding. Dependencies are declared in `pyproject.toml` and locked in `uv.lock`.
+Use Python 3.12+, uv, and curl. The offline tool is the installable `tile_service` package. Rasterio supplies GDAL for projection, resampling, TIFF caching, and PNG encoding. Dependencies are declared in `pyproject.toml` and locked in `uv.lock`.
 
 ```sh
 uv sync --locked
 ```
 
-The globes viewer does not use Python or GDAL. It reads these manifests over HTTP. Height bounds stay in globes at `native/elevation-bounds.wasm`. Finished tiles stay valid. A complete pipeline-version-2 pyramid is kept as-is; any other resumed build must match the current source and settings. `uv run tile-service cloudless` stitches the EOxCloudless 2020 map at the Moon's pyramid depth. `uv run tile-service earth-elevation` prepares ETOPO 2022 ice-surface relief. See the [tile guide](tile-generation.md).
+The globes viewer does not use Python or GDAL. It reads these manifests over HTTP. Height bounds stay in globes at `native/elevation-bounds.wasm`. Finished tiles stay valid. A complete pipeline-version-2 pyramid is kept as-is; any other resumed build must match the current source and settings. See the [tile guide](tile-generation.md) for Mars and Earth.
 
-Source datasets download only through explicit fetch/preparation commands. Dependency installation and viewer startup do not download them.
+Every dataset is a build target in `datasets/catalog.json`, named after its
+output under `public/data`. `uv run tile-service list` shows them and their
+state. `build TARGET` downloads and verifies the target's sources, then builds
+it; rerunning resumes an interrupted build or just verifies a finished one.
+`--dry-run` prints sources, sizes and outputs without downloading. Dependency
+installation and viewer startup never download source data.
 
 ## Imagery
 
 The source is the [USGS LROC WAC global 100 m morphology mosaic](https://astrogeology.usgs.gov/search/map/moon_lro_lroc_wac_global_morphology_mosaic_100m), about 6 GB.
 
 ```sh
-uv run tile-service fetch --info
-uv run tile-service fetch
-uv run tile-service tiles --max-level 2 --output public/data/moon/wac-preview
-uv run tile-service tiles
+uv run tile-service build moon/wac --dry-run
+uv run tile-service build moon/wac --max-level 2 --output public/data/moon/wac-preview
+uv run tile-service build moon/wac
 ```
 
-`data:fetch` resumes from a `.part` file, checks size and the TIFF signature, and stores a local SHA-256 receipt. That receipt detects local changes. It is not a publisher checksum.
+Downloads resume from a `.part` file, check size and the TIFF signature, and store a local SHA-256 receipt. That receipt detects local changes. It is not a publisher checksum.
 
-`data:tiles` writes `public/data/moon/wac/` unless `--output` is set. One cached reprojection per cube face supplies the lower levels. Builds resume after interruption and write `manifest.json` only after every tile exists. Changing `--jobs` is resumable. Changing source, tile size, gutter, or level is not: use a new output directory.
+The build writes `public/data/moon/wac/` unless `--output` is set. One cached reprojection per cube face supplies the lower levels. Builds resume after interruption and write `manifest.json` only after every tile exists. Changing `--jobs` is resumable. Changing source, tile size, gutter, or level is not: use a new output directory.
 
-| Option              | Meaning                                    |
-| ------------------- | ------------------------------------------ |
-| `--jobs`            | Face workers, 1–6. Default 2               |
-| `--max-level`       | Deepest quadtree level, 0–12               |
-| `--tile-size`       | Core pixels, power of two from 16 to 2048  |
-| `--gutter`          | Padding pixels, 1–16                       |
-| `--png-compression` | Lossless PNG speed/size tradeoff, 0–9      |
-| `--keep-cache`      | Retain face intermediates after extraction |
+| Option        | Meaning                                                  |
+| ------------- | -------------------------------------------------------- |
+| `--jobs`      | Face workers, 1–6. Default 2                             |
+| `--max-level` | Deepest quadtree level, 0–12                             |
+| `--output`    | Another output directory, e.g. for a preview             |
+| `--source`    | A local raster instead of the catalog download           |
+
+Tile size (256) and gutter (2) come from the dataset file. Library callers can
+set them, PNG compression and face-cache retention on `tile_service.imagery.build`.
 
 The viewer loads `/data/moon/wac/manifest.json` by default. Another pyramid:
 
@@ -49,7 +54,7 @@ Visible tiles are requested on demand, four at a time. Ready ancestors stay on s
 ## Elevation
 
 ```sh
-uv run tile-service elevation
+uv run tile-service build moon/elevation
 ```
 
 This downloads the NASA global LOLA grid (about 32 MB), checks its pinned SHA-256, and writes `public/data/moon/elevation/`. Samples are about 1.9 km apart. This is global relief, not meter-scale terrain.
@@ -72,10 +77,9 @@ The Wasm bounds kernel belongs to the globes renderer; this service does not bui
 
 ```sh
 uv run pytest
-uv run tile-service benchmark
 ```
 
-Tests use analytic rasters and local transfer fixtures. The benchmark measures fresh generation with 1, 2, and 4 workers. See [deployment](deployment.md) for checks against the actual serving container.
+Tests use analytic rasters and local transfer fixtures. See [deployment](deployment.md) for checks against the actual serving container.
 
 ## Apollo landing sites
 
@@ -86,15 +90,14 @@ byte lengths and ETags checked on 2026-10-17. Coordinates come from the same
 `examples/moon/data/landing-sites.ts` table used for the globe's labels and site selector.
 
 ```sh
-uv run tile-service apollo --list
-uv run tile-service apollo --site apollo11 --info
-uv run tile-service apollo --site apollo11
-uv run tile-service apollo --site all
+uv run tile-service build moon/apollo --dry-run
+uv run tile-service build moon/apollo --site apollo11
+uv run tile-service build moon/apollo
 ```
 
-Without `--site`, the command only lists sources. `--info` prints the plan without
-compiling or downloading. `--site all` explicitly downloads all six sources, about
-6.30 GB (5.87 GiB), plus generated tiles. Files resume and existing sources are
+`--dry-run` prints the plan without downloading. `--site` (repeatable) limits the
+build; without it, all six sources download, about 6.30 GB (5.87 GiB), plus
+generated tiles. Files resume and existing sources are
 checked against their local SHA-256 receipts. The ETag guards resumed downloads;
 these receipts are locally computed, not publisher-provided SHA-256 checksums.
 
@@ -114,12 +117,11 @@ for Apollo 17; tile sampling varies over the cube sphere and is separate from
 source resolution. Extra terrain subdivision cannot create additional photo detail.
 The full source TIFF is downloaded once; this is not a remote cropped-TIFF service.
 
-Options: `--radius-meters 100..20000`, `--max-level 1..16`, `--base /path/manifest.json`,
-`--output /path/apollo`. Generation rejects more than 20,000 regional tiles or a
+Options: `--radius-meters 100..20000`, `--max-level 1..16`, `--output /path/apollo`. Generation rejects more than 20,000 regional tiles or a
 region crossing a cube-face edge. All current Apollo sites fit within one face.
 Use the normal level-7 WAC base. Another radius/depth/source requires a new output
 directory, avoiding stale tiles; rerunning identical settings resumes completed PNGs.
-Run site-generation commands sequentially; `--site all` handles that for you.
+Run site builds sequentially; one `build moon/apollo` handles that for you.
 
 Regions go into `public/data/moon/apollo/<site>/`. A catalog is atomically published
 only after that site's tiles finish. The viewer discovers `../apollo/catalog.json`
@@ -162,9 +164,9 @@ are outside the disk. Generated tiles are blended onto the cloudless base, which
 CC BY-NC-SA 4.0, so those PNGs follow that license even though NAIP itself does not.
 
 ```sh
-uv run tile-service earth-sites
-uv run tile-service earth-sites --site starbase --info
-uv run tile-service earth-sites --site all
+uv run tile-service build earth/sites --dry-run
+uv run tile-service build earth/sites --site starbase
+uv run tile-service build earth/sites
 ```
 
 Output is `public/data/earth/sites/catalog.json`. The Earth viewer loads it after the
@@ -177,8 +179,8 @@ The [elevation tile guide](elevation-tiles.md) describes the bounded numeric cac
 coarse LOLA pyramid, paged min/max metadata and regional SLDEM/NAC import.
 
 ```sh
-uv run tile-service height-tiles
-uv run tile-service apollo --elevation --site apollo12
+uv run tile-service build moon/elevation-tiles
+uv run tile-service build moon/apollo-elevation --site apollo12-dtm
 ```
 
 When the tiled manifest exists, the viewer uses it in place of downloading the
@@ -206,11 +208,11 @@ will still show darkness there.
 ### Download the Shackleton polar pack
 
 ```sh
-uv run tile-service polar --info       # Sizes and source URLs; no downloads
-uv run tile-service polar                # Imagery + elevation, resumable
-uv run tile-service polar --imagery-only
-uv run tile-service polar --elevation-only
+uv run tile-service build moon/south-pole-imagery moon/south-pole-elevation --dry-run
+uv run tile-service build moon/south-pole-imagery moon/south-pole-elevation
 ```
+
+The imagery and elevation layers are separate targets; build either alone.
 
 This builds **44 km radius coverage around the south pole**, with finer tiles
 within **16 km of Shackleton**. Both tiers use the same NAC source and brightness
@@ -235,19 +237,19 @@ are preserved in the region's provenance.
 Default context tiles stop at cube level 11, about 6.63 m/pixel for imagery at
 the pole. Shackleton detail stops at level 13, about 1.66 m/pixel; the source
 remains 1 m/pixel. Height tiles use the existing numeric encoding and the same
-two coverage tiers. Override `--radius-meters`, `--imagery-max-level`, or
-`--elevation-max-level` to choose another cost/detail balance. Oversized requests
-are rejected before download; native builds retain the 20,000-tile safety limit.
-Changing settings requires a fresh output location, as for Apollo packs.
-`--imagery-output`, `--elevation-output` and `--base` allow alternate datasets.
-Use `--overview-radius-meters`, `--overview-imagery-max-level`,
-`--overview-elevation-max-level`, and `--feather-meters` to adjust the context.
+two coverage tiers. Override `--radius-meters` or `--max-level` per target to
+choose another cost/detail balance. Oversized requests are rejected before
+download; native builds retain the 20,000-tile safety limit. Changing settings
+requires a fresh output location, as for Apollo packs. The overview ring and
+feather width live in `datasets/south-pole-nac.json` (imagery) and
+`datasets/south-pole-lola.json` (elevation): ordinary sites files whose single
+site carries a `mosaic` or `download` source.
 The runtime retains WAC/LOLA fallback and bounded streaming caches. Cache
 refinement preserves baseline parent coverage across the view before spending
 remaining slots on deeper detail. Source brightness differences can still
 remain at the outer boundary.
 
-Rerunning the command reuses verified source downloads and completed tiles.
+Rerunning the build reuses verified source downloads and completed tiles.
 The broader imagery replaces the old Shackleton catalog entry only after its
 generation completes; old files remain on disk. Elevation publishes separately
 after its build completes. Reload the viewer after both stages finish.

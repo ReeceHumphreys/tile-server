@@ -7,18 +7,16 @@ Web Mercator map. Existing geographic PMTiles viewers cannot display them as map
 
 ## Build and publish
 
-Run the existing generation commands, then package their results:
+Build the targets, then release them. `release` packs every tileset and
+regional catalog under `public/data` before exporting:
 
 ```sh
-uv run tile-service pack --manifest public/data/moon/wac/manifest.json
-uv run tile-service pack --manifest public/data/moon/elevation-tiles/manifest.json
-uv run tile-service pack --manifest public/data/moon/apollo/catalog.json
-# Or package every generated body/dataset directly under public/data:
-uv run tile-service pack --all
+uv run tile-service build moon/wac moon/elevation-tiles moon/apollo
+uv run tile-service release --output releases/v2
 ```
 
-`--root /another/data/root` changes the root scanned by `--all`. This command
-does not download rasters or regenerate pixels. The pinned Python writer is
+`--workspace /another/project` builds and releases another project directory. Packing does not download
+rasters or regenerate pixels, and an unchanged tileset reuses its archives. The pinned Python writer is
 installed from `uv.lock`; the globe uses the npm `pmtiles` reader.
 
 The packer writes one archive per cube face. Numeric height tiles are also
@@ -31,7 +29,7 @@ Archives have content-hash filenames under `pmtiles/`. Packaging validates input
 height/page checksums, builds archives, checks their headers/metadata, and finally
 atomically replaces the manifest or regional catalog with archive references.
 Readers continue using the previous references if packaging fails. Each manifest
-or catalog is its own publication unit; `--all` is not a transaction across bodies.
+or catalog is its own publication unit; packing everything is not a transaction across bodies.
 
 Repeated packaging fingerprints tile contents and reuses verified existing
 archives. Source changes during packaging are rejected. Partial archive files
@@ -89,7 +87,7 @@ serve the same files if it supports ranges and appropriate CORS/validators.
 To update data: generate, package, upload new archives/pages, then publish the
 new manifest/catalog. Retain old referenced content until existing readers and
 caches no longer need it. Height generation clears stale archive references when
-publishing changed metadata, so rerun `uv run tile-service pack` before deploying that release.
+publishing changed metadata; `uv run tile-service release` repacks them.
 
 Archiving adds a second copy of build data on disk. It improves publication and
 file management; it does not by itself promise faster rendering or fewer HTTP

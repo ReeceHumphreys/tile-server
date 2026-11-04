@@ -12,16 +12,17 @@ from boto3.s3.transfer import TransferConfig
 from botocore.config import Config
 from botocore.exceptions import ClientError
 
-from pipeline.runtime import check, read_json, sha256
+from tile_service import releases
+from tile_service.runtime import check, log, read_json
+
+LOCAL_HOSTS = {"localhost", "127.0.0.1", "objectstore", "localstack", "host.docker.internal"}
 
 IMMUTABLE = "public, max-age=31536000, immutable"
 REVALIDATE = "no-cache"
 
 
 def client(endpoint=None):
-    endpoint = (
-        endpoint or os.environ.get("AWS_ENDPOINT_URL_S3") or os.environ.get("AWS_ENDPOINT_URL")
-    )
+    endpoint = _endpoint(endpoint)
     return boto3.client(
         "s3",
         endpoint_url=endpoint,
@@ -34,8 +35,12 @@ def client(endpoint=None):
     )
 
 
-def bucket_name(args):
-    name = args.get("--bucket", os.environ.get("TILE_BUCKET", ""))
+def _endpoint(endpoint=None):
+    return endpoint or os.environ.get("AWS_ENDPOINT_URL_S3") or os.environ.get("AWS_ENDPOINT_URL")
+
+
+def _bucket(bucket=None):
+    name = bucket or os.environ.get("TILE_BUCKET", "")
     if not name:
         raise RuntimeError("Set TILE_BUCKET or --bucket")
     return name
@@ -50,28 +55,19 @@ def head(s3, bucket, key):
         raise
 
 
-def init_s3(args):
-    """Initialize only a local emulator; production buckets are managed by Terraform."""
-    args.validate({"--bucket", "--endpoint-url", "--origin"})
-    endpoint = (
-        args.get("--endpoint-url")
-        or os.environ.get("AWS_ENDPOINT_URL_S3")
-        or os.environ.get("AWS_ENDPOINT_URL")
-    )
+def init_local(bucket=None, endpoint=None, origin="*"):
+    """Create and open a bucket on a local emulator; AWS buckets are managed by Terraform."""
+    endpoint = _endpoint(endpoint)
     if not endpoint:
-        raise RuntimeError("init-s3 requires an explicit emulator endpoint; use Terraform for AWS")
-    host = urlsplit(endpoint).hostname or ""
-    if host not in {
-        "localhost",
-        "127.0.0.1",
-        "objectstore",
-        "localstack",
-        "host.docker.internal",
-    } and not host.endswith(".localhost.localstack.cloud"):
         raise RuntimeError(
-            "init-s3 is restricted to local emulator endpoints; use Terraform for AWS"
+            "Local S3 setup requires an explicit emulator endpoint; use Terraform for AWS"
         )
-    s3, bucket = client(endpoint), bucket_name(args)
+    host = urlsplit(endpoint).hostname or ""
+    if host not in LOCAL_HOSTS and not host.endswith(".localhost.localstack.cloud"):
+        raise RuntimeError(
+            "Local S3 setup is restricted to local emulator endpoints; use Terraform for AWS"
+        )
+    s3, bucket = client(endpoint), _bucket(bucket)
     try:
         s3.head_bucket(Bucket=bucket)
     except ClientError as error:
@@ -86,7 +82,7 @@ def init_s3(args):
         CORSConfiguration={
             "CORSRules": [
                 {
-                    "AllowedOrigins": [args.get("--origin", "*")],
+                    "AllowedOrigins": [origin],
                     "AllowedMethods": ["GET", "HEAD"],
                     "AllowedHeaders": ["Range", "If-Match", "If-None-Match"],
                     "ExposeHeaders": ["ETag", "Accept-Ranges", "Content-Length", "Content-Range"],
@@ -117,69 +113,31 @@ def init_s3(args):
             }
         ),
     )
-    print(f"Initialized local S3 bucket {bucket}")
+    log(f"Initialized local S3 bucket {bucket}")
 
 
-def release_files(root):
-    """Read the exported release, reject escapes, and validate its archive/page hashes."""
-    release = read_json(root / "release.json")
-    paths = {}
+def upload(release, *, bucket=None, release_id=None, endpoint=None, part_size_mib=64):
+    """Upload an exported release to `releases/<id>/`, resumably and immutably.
 
-    def add(relative, expected=None):
-        path = root / relative
-        if not path.resolve().is_relative_to(root) or not path.is_file():
-            raise RuntimeError(f"Missing or escaping release asset: {relative}")
-        digest = sha256(path)
-        if expected and digest != expected:
-            raise RuntimeError(f"Release asset checksum mismatch: {relative}")
-        paths[relative] = (path, digest)
-
-    def storage(directory, descriptor):
-        if descriptor.get("type") != "pmtiles" or descriptor.get("profile") != "normalized-cube-v1":
-            raise RuntimeError("Unsupported release storage")
-        for name in descriptor["archives"].values():
-            path = directory / name
-            expected = path.stem.rsplit("-", 1)[-1]
-            if not re.fullmatch(r"[a-f0-9]{64}", expected):
-                raise RuntimeError(f"Archive lacks content hash: {path}")
-            add(path.as_posix(), expected)
-
-    for name in release["documents"]:
-        check()
-        relative = Path("data") / name
-        add(relative.as_posix())
-        document = read_json(root / relative)
-        if "sites" in document:
-            for site in document["sites"]:
-                storage(relative.parent / site["id"], site["storage"])
-        else:
-            storage(relative.parent, document["storage"])
-            for page in document.get("pages", {}).values():
-                add((relative.parent / page["path"]).as_posix(), page["sha256"])
-    if len(paths) != release["assetCount"]:
-        raise RuntimeError("Release asset count mismatch")
-    add("release.json")
-    return paths
-
-
-def publish_s3(args):
-    args.validate({"--source", "--bucket", "--release", "--endpoint-url", "--part-size-mib"})
-    root = Path(args.get("--source", "published")).resolve()
-    bucket = bucket_name(args)
-    release_id = args.get("--release", os.environ.get("TILE_RELEASE", ""))
+    Archives go first, then metadata, then a completion marker, so readers
+    never see a partial release. Existing objects must match exactly.
+    """
+    root = Path(release).resolve()
+    bucket = _bucket(bucket)
+    release_id = release_id or os.environ.get("TILE_RELEASE", "")
     if not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}", release_id):
         raise RuntimeError("Set a safe, unique TILE_RELEASE or --release")
-    part_size = args.integer("--part-size-mib", 64)
+    part_size = part_size_mib
     if not 5 <= part_size <= 512:
         raise RuntimeError("Multipart size must be 5..512 MiB")
-    files = release_files(root)
+    files = releases.files(root)
     identity = hashlib.sha256()
     for name, (_, digest) in sorted(files.items()):
         identity.update(f"{name}:{digest}\n".encode())
     release_hash = identity.hexdigest()
     prefix = f"releases/{release_id}/"
     marker_key = prefix + "_complete.json"
-    s3 = client(args.get("--endpoint-url"))
+    s3 = client(endpoint)
     marker = head(s3, bucket, marker_key)
     if marker and marker.get("Metadata", {}).get("sha256") != release_hash:
         raise RuntimeError(
@@ -234,7 +192,7 @@ def publish_s3(args):
         ):
             raise RuntimeError(f"S3 upload verification failed: {key}")
         uploaded += 1
-        print(f"Uploaded s3://{bucket}/{key}", flush=True)
+        log(f"Uploaded s3://{bucket}/{key}")
     check()
     if not marker:
         s3.put_object(
@@ -252,12 +210,4 @@ def publish_s3(args):
             CacheControl=REVALIDATE,
             Metadata={"sha256": release_hash},
         )
-    print(f"S3 release {release_id}: {uploaded} uploaded, {reused} verified/reused")
-
-
-def seed_s3(args):
-    args.validate({"--source"})
-    from pipeline.runtime import Args
-
-    init_s3(Args(["tile-service", "init-s3"]))
-    publish_s3(Args(["tile-service", "publish-s3", "--source", args.get("--source", "published")]))
+    log(f"S3 release {release_id}: {uploaded} uploaded, {reused} verified/reused")

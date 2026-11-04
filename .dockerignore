@@ -3,8 +3,8 @@
 !Caddyfile
 !pyproject.toml
 !uv.lock
-!pipeline/
-!pipeline/**
+!tile_service/
+!tile_service/**
 !datasets/
 !datasets/**
 **/__pycache__

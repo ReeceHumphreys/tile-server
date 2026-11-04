@@ -21,7 +21,9 @@ source data needs explicit conversion to the chosen spherical reference first.
 Stretch higher-bit-depth scientific imagery to a display product separately;
 keep the calibrated originals and provenance. This step is not an albedo fit.
 
-Create `mars-imagery.json` (the radius here is an example spherical Mars model):
+Describe the source in a dataset file in your workspace, e.g.
+`datasets/mars-imagery.json` (`sourceFile` is relative to `data/raw`; the
+radius here is an example spherical Mars model):
 
 ```json
 {
@@ -29,7 +31,7 @@ Create `mars-imagery.json` (the radius here is an example spherical Mars model):
   "body": "Mars",
   "title": "My Mars mosaic",
   "radiusMeters": 3389500,
-  "sourceFile": "/absolute/path/mars-surface.tif",
+  "sourceFile": "mars/mars-surface.tif",
   "sourceUrl": "https://example.org/original-dataset",
   "sourcePage": "https://example.org/dataset-documentation",
   "credit": "Dataset author and required attribution",
@@ -42,9 +44,26 @@ Create `mars-imagery.json` (the radius here is an example spherical Mars model):
 }
 ```
 
-```sh
-uv run tile-service tiles --config ./mars-imagery.json --output ./public/data/mars/imagery --jobs 4
+Then name a build target for it in the workspace's `datasets/catalog.json`
+(its targets are added to the packaged ones):
+
+```json
+"mars/imagery": {
+  "layer": "imagery",
+  "source": { "type": "download", "dataset": "mars-imagery.json" },
+  "description": "My Mars mosaic"
+}
 ```
+
+```sh
+uv run tile-service build mars/imagery --source /absolute/path/mars-surface.tif --max-level 2 --output public/data/mars/imagery-check
+uv run tile-service build mars/imagery --source /absolute/path/mars-surface.tif --jobs 4
+```
+
+Add `sourceUrl`/`expectedBytes`/`sourceETag` to the dataset and drop `--source`
+to have the build download the source itself. Regional imagery is another
+target with `"layer": "imagery-regions"`, a `base` target and a `sites` file;
+see `datasets/apollo-nac.json` for the site shape.
 
 Start with max level 2 to check all faces, longitude seam, poles, known landmarks,
 and orientation. Increase depth only after checking the reprojection. The global
@@ -52,18 +71,17 @@ builder currently supports levels 0–12, jobs 1–6, core power-of-two sizes 16
 and gutters 1–16. Tile counts grow as `6 * (4^(L+1) - 1) / 3`; plan storage before
 full generation. Re-running the same command resumes completed work; changed
 sources/settings require a fresh output. Cached reprojection avoids repeating
-full GDAL warps for every level. Regional imagery can use the `region` command
-with a base manifest and source config; see the Moon [data guide](data.md).
+full GDAL warps for every level. Regional imagery uses a `regions` target with a
+sites file and a base target; see the Moon [data guide](data.md).
 
 ## Viking MDIM 2.1 color
 
-`datasets/mars-viking-mdim21-232m.json` is the USGS colorized Viking mosaic: public-domain uint8 RGB, 256 pixels per degree, on the 3,396,190 m sphere stored in the GeoTIFF. `data:fetch` resumes from a `.part` file and checks that pinned size, the S3 ETag, and the TIFF signature.
+`datasets/mars-viking-mdim21-232m.json` is the USGS colorized Viking mosaic: public-domain uint8 RGB, 256 pixels per degree, on the 3,396,190 m sphere stored in the GeoTIFF. The download resumes from a `.part` file and checks that pinned size, the S3 ETag, and the TIFF signature.
 
 ```sh
-uv run tile-service fetch --config datasets/mars-viking-mdim21-232m.json --info
-uv run tile-service fetch --config datasets/mars-viking-mdim21-232m.json
-uv run tile-service tiles --config datasets/mars-viking-mdim21-232m.json --max-level 2 --output public/data/mars/viking-preview
-uv run tile-service tiles --config datasets/mars-viking-mdim21-232m.json --output public/data/mars/viking
+uv run tile-service build mars/viking --dry-run
+uv run tile-service build mars/viking --max-level 2 --output public/data/mars/viking-preview
+uv run tile-service build mars/viking
 ```
 
 The download is 12,742,411,029 bytes and lands at `data/raw/mars/mars-viking-mdim21-232m.tif`. The source is about 232 m/pixel. The level-2 command is a seam and pole check. The last command writes the level-7 pyramid the Mars example loads: 131,070 tiles, about 207 m per pixel at a face center, the same depth as the Moon WAC pyramid. Open the globe with `{ name: "Mars", radiusMeters: 3396190 }`. The tool accepts this file only at that radius. Illumination is already in the mosaic. Credit NASA Ames and the USGS Astrogeology Science Center.
@@ -83,13 +101,14 @@ pixel, so it resamples this mosaic. Zoom 0–7 is accepted. A zoom-5 mosaic
 already at `data/raw/earth/s2cloudless-2020.tif` is left as it is.
 
 ```sh
-uv run tile-service cloudless
-uv run tile-service tiles --config datasets/s2cloudless-2020.json --output public/data/earth/s2cloudless-2020-z7
+uv run tile-service build earth/s2cloudless-2020-z7 --dry-run
+uv run tile-service build earth/s2cloudless-2020-z7
 ```
 
-`datasets/s2cloudless-2020.json` matches that default mosaic. Another `--zoom`
-writes `data/raw/earth/s2cloudless-2020-z7.json`; pass that file as `--config`.
-Check faces at `--max-level 2` before the full build. The download uses 16 fetchers. `--jobs` accepts 1–32. One failed tile no longer stops the others, and a rerun skips tiles already saved.
+The target's `zoom` lives in `datasets/catalog.json`; another zoom is another
+target with its own `sourceFile`. Check faces with `--max-level 2 --output …`
+before the full build. The download uses 16 fetchers. One failed tile does not
+stop the others, and a rerun skips tiles already saved.
 
 Open the manifest with body `{ name: "Earth", radiusMeters: 6378137 }`. Turn
 terrain shading off. Daylight is already in the photograph. Keep the credit
@@ -102,36 +121,47 @@ its radius. Convert datum differences before this step. Explicitly supply unit
 scale/offset when source values are not meters. The current encoding cannot
 represent heights outside −10000 to +22767.5 m; the tool rejects them.
 
-The Earth example uses ETOPO 2022 ice surface at 60 arc-seconds (465,969,062 bytes, DOI 10.25921/fd45-gt74). The source is WGS 84 longitude and latitude with EGM2008 orthometric meters. Those angles are placed on the 6,378,137 m sphere and the meters become radial offsets. Deep trenches are clamped to −10000 m so they fit the shared uint16 encoding; the lunar encoder still rejects out-of-range samples. The prepared grid is 16,384 by 8,192, about 2.4 km per pixel, the finest grid the tool accepts. The browser global-grid path stops at 8,192 pixels, so the viewer loads the tiles and not that grid. `--info` prints the download and writes nothing.
+The Earth example uses ETOPO 2022 ice surface at 60 arc-seconds (465,969,062 bytes, DOI 10.25921/fd45-gt74). The source is WGS 84 longitude and latitude with EGM2008 orthometric meters. Those angles are placed on the 6,378,137 m sphere and the meters become radial offsets. Deep trenches are clamped to −10000 m so they fit the shared uint16 encoding; the lunar encoder still rejects out-of-range samples. The prepared grid is 16,384 by 8,192, about 2.4 km per pixel, the finest grid the tool accepts. The browser global-grid path stops at 8,192 pixels, so the viewer loads the tiles and not that grid. `--dry-run` prints the download and writes nothing.
 
 ```sh
-uv run tile-service earth-elevation
-uv run tile-service height-tiles --source public/data/earth/elevation/manifest.json --output public/data/earth/elevation-tiles --tile-size 128 --gutter 2 --max-level 5
+uv run tile-service build earth/elevation earth/elevation-tiles
 ```
 
 The Mars example uses the MGS MOLA 463 m DEM. Heights are meters above the areoid on the same 3,396,190 m sphere as the Viking mosaic. The prepared grid is 11,520 by 5,760, about 1.85 km per pixel, which matches the Moon LOLA grid's 1.90 km spacing. Level 5 tiles are about 1.66 km at a face center, the same relationship as the Moon's level-4 LOLA pyramid. The browser global-grid path still stops at 8,192 pixels, so the viewer loads these tiles and not the prepared grid.
 
 ```sh
-uv run tile-service fetch --config datasets/mars-mola-463m.json
-uv run tile-service prepare-elevation --source data/raw/mars/mars-mola-463m.tif --output public/data/mars/elevation --body Mars --body-radius 3396190 --width 11520 --height 5760 --input-scale 1 --input-offset 0 --credit "NASA GSFC / MOLA; USGS Astrogeology Science Center. Public domain." --source-page https://astrogeology.usgs.gov/search/map/mars_mgs_mola_dem_463m
-uv run tile-service height-tiles --source public/data/mars/elevation/manifest.json --output public/data/mars/elevation-tiles --tile-size 128 --gutter 2 --max-level 5
+uv run tile-service build mars/elevation mars/elevation-tiles
 ```
 
-Preparation writes a north-to-south, east-positive global numeric grid and must
-use a new/empty output directory. Missing cells use `--nodata-height` (default
-0 m); this fill is a deliberate approximation, not measured terrain. Choose an
+A `grid` target takes its width and height from `datasets/catalog.json` and the
+body, radius, `inputScale`/`inputOffset` and credit from its dataset file.
+Preparation writes a north-to-south, east-positive global numeric grid into a
+new or empty directory; rebuilding an up-to-date grid only verifies it. Missing
+cells become 0 m; this fill is a deliberate approximation, not measured terrain. Choose an
 appropriate baseline and document it. Numeric tile generation then resumes when
 rerun; it preserves min/max bounds rather than averaging away peaks. The global
 height builder supports levels 0–5. Higher detail belongs in sparse regions.
 
-```sh
-uv run tile-service height-region --source ./local-dem.tif --output ./public/data/mars/elevation-tiles --id local-dtm --latitude -4.5 --longitude 137.4 --radius-meters 2000 --max-level 13 --input-scale 1 --input-offset 0 --credit "DTM author" --source-page https://example.org/dtm
+```python
+from tile_service import heights
+
+heights.add_region(
+    "public/data/mars/elevation-tiles",
+    "./local-dem.tif",
+    "local-dtm",
+    -4.5,
+    137.4,
+    2000,
+    max_level=13,
+    credit="DTM author",
+    source_page="https://example.org/dtm",
+)
 ```
 
 Regional heights inherit body/radius from the base manifest and require matching
 source CRS. Detail caps are currently restricted to one cube face; high-detail
-radius is 100–20000 m. An optional `--coverage-config` can add a larger coarse
-context cap. The base must be generated before regions. Runtime requests use
+radius is 100–20000 m. Optional `overview` and `feather` arguments add a larger
+coarse context cap. Sources worth keeping belong in a `height-regions` target. The base must be generated before regions. Runtime requests use
 parent fallback, and separately bounded imagery/elevation residency.
 
 ## Output contract

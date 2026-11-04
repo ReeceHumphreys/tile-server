@@ -19,14 +19,13 @@ part of dependency maintenance, then rerun the image and HTTP checks.
 
 ```sh
 uv sync --locked
-# Run the required fetch/generation commands first.
-uv run tile-service pack --all
-uv run tile-service publish --output published
+# Build the targets you serve first, e.g. `uv run tile-service build all`.
+uv run tile-service release --output published
 docker compose up -d --build --wait
 ```
 
-`publish` scans `public/data/<body>/<dataset>/manifest.json` and `catalog.json`.
-`--root` selects another build root. It rejects unpacked cube datasets, missing
+`release` packs every tileset into PMTiles (reusing unchanged archives), then scans `public/data/<body>/<dataset>/manifest.json` and `catalog.json`.
+`--workspace` selects another project directory. It validates every document with the globe's own rules (`tile_service.documents`, ported from `globes/src/imagery/manifest.ts`, `imagery/regions.ts` and `elevation/tiles.ts`) and rejects anything the globe would refuse, unpacked cube datasets, missing
 files, paths escaping the root, and mismatched archive/page checksums. It exports
 only manifests, catalogs, referenced PMTiles, and height metadata pages under
 `data/`, preserving all existing request paths. `release.json` describes the release.
@@ -70,7 +69,7 @@ TLS is expected at your existing reverse proxy or load balancer. This container
 does not obtain certificates. On a single host, replace a release with:
 
 ```sh
-uv run tile-service publish --output releases/2026-10-25
+uv run tile-service release --output releases/2026-10-25
 TILE_ROOT=./releases/2026-10-25 docker compose up -d --force-recreate --wait
 ```
 
@@ -85,8 +84,8 @@ the sources and build state needed to reproduce them.
 
 ```sh
 docker compose --profile tools build tools
-LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose --profile tools run --rm tools polar --info
-LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose --profile tools run --rm tools pack --all
+LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose --profile tools run --rm tools build moon/south-pole-imagery --dry-run
+LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) docker compose --profile tools run --rm tools build moon/wac
 ```
 
 The tools service mounts `data/`, `public/`, and read-only `datasets/` under `/work`.
@@ -98,11 +97,12 @@ To publish with the tools image, explicitly mount the output directory's parent:
 ```sh
 docker run --rm --user "$(id -u):$(id -g)" \
   -v "$PWD/public:/work/public:ro" -v "$PWD/releases:/work/releases" \
-  tile-service-tools publish --output releases/v1
+  tile-service-tools release --no-pack --output releases/v1
 ```
 
 Build that tag with `docker build --target tools -t tile-service-tools .` and
-create `releases/` first. Serving does not require building the tools image.
+create `releases/` first. `--no-pack` exports already packed data, so `public/`
+can stay read-only; drop it (and the `:ro`) to pack in the same step. Serving does not require building the tools image.
 
 ## Validation
 

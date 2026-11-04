@@ -6,9 +6,9 @@ import json
 import pytest
 from moto import mock_aws
 
-from pipeline import s3
-from pipeline.runtime import Args, sha256
 from tests.make_release import main as make_release
+from tile_service import releases, s3
+from tile_service.runtime import sha256
 
 pytestmark = pytest.mark.s3
 
@@ -35,27 +35,12 @@ def release(tmp_path):
 
 
 def publish(root):
-    s3.publish_s3(
-        Args(
-            [
-                "tile-service",
-                "publish-s3",
-                "--source",
-                str(root),
-                "--bucket",
-                "test-tiles",
-                "--release",
-                "v1",
-                "--part-size-mib",
-                "5",
-            ]
-        )
-    )
+    s3.upload(root, bucket="test-tiles", release_id="v1", part_size_mib=5)
 
 
 def test_publish_ranges_metadata_and_immutable_retry(store, release, capsys):
     publish(release)
-    files = s3.release_files(release)
+    files = releases.files(release)
     name = next(name for name in files if name.endswith(".pmtiles"))
     key = "releases/v1/" + name
     receipt = store.head_object(Bucket="test-tiles", Key=key)
@@ -133,37 +118,15 @@ def test_release_rejects_escaping_asset(release, tmp_path):
     archive.rename(external)
     archive.symlink_to(external)
     with pytest.raises(RuntimeError, match="escaping"):
-        s3.release_files(release)
+        releases.files(release)
 
 
 def test_init_is_local_only_and_configures_cors(store):
     with pytest.raises(RuntimeError, match="explicit emulator"):
-        s3.init_s3(Args(["tile-service", "init-s3", "--bucket", "test-tiles"]))
+        s3.init_local("test-tiles")
     with pytest.raises(RuntimeError, match="restricted to local"):
-        s3.init_s3(
-            Args(
-                [
-                    "tile-service",
-                    "init-s3",
-                    "--bucket",
-                    "test-tiles",
-                    "--endpoint-url",
-                    "https://s3.us-east-1.amazonaws.com",
-                ]
-            )
-        )
-    s3.init_s3(
-        Args(
-            [
-                "tile-service",
-                "init-s3",
-                "--bucket",
-                "test-tiles",
-                "--endpoint-url",
-                "http://localhost:4566",
-            ]
-        )
-    )
+        s3.init_local("test-tiles", "https://s3.us-east-1.amazonaws.com")
+    s3.init_local("test-tiles", "http://localhost:4566")
     cors = store.get_bucket_cors(Bucket="test-tiles")["CORSRules"][0]
     assert cors["AllowedMethods"] == ["GET", "HEAD"]
     assert "Range" in cors["AllowedHeaders"] and "ETag" in cors["ExposeHeaders"]

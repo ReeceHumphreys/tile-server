@@ -9,7 +9,7 @@ WORKDIR /app
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy PYTHONUNBUFFERED=1
 COPY pyproject.toml uv.lock ./
 RUN uv sync --locked --no-dev --no-install-project
-COPY pipeline ./pipeline
+COPY tile_service ./tile_service
 COPY datasets ./datasets
 RUN uv sync --locked --no-dev --no-editable
 USER 10001:10001
