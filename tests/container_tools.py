@@ -8,7 +8,7 @@ import numpy as np
 import rasterio
 
 from tile_service import imagery, releases, sources
-from tile_service.cube import MOON_RADIUS, equirect_affine, equirect_crs
+from tile_service.roots import MOON_RADIUS, equirect_affine, equirect_crs
 from tile_service.runtime import catalog_path, gdal_library, read_json
 
 
@@ -37,7 +37,7 @@ def main():
         imagery.build(source, root / "build/moon/imagery", dataset, tile_size=16, max_level=1)
         releases.pack(root / "build")
         releases.export(root / "build", root / "release")
-        assert read_json(root / "release/release.json")["assetCount"] == 7
+        assert read_json(root / "release/release.json")["assetCount"] == 5
         parts = [raster(root / f"part{index}.tif", 40 * index) for index in range(2)]
         assert sources.mosaic(parts, root / "mosaic.vrt", MOON_RADIUS).exists()
     print("Installed tools: imagery, PMTiles, release export, and GDAL VRT checks passed")

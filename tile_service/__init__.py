@@ -1,4 +1,4 @@
-"""Build planetary imagery and elevation as cube-sphere tiles, released as PMTiles.
+"""Build planetary imagery and elevation as geographic and polar tiles, released as PMTiles.
 
 from tile_service import Workspace
 

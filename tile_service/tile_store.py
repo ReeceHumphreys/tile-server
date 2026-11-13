@@ -1,6 +1,6 @@
-"""Read cube tiles from a dataset, wherever they live.
+"""Read tiles from a dataset, wherever they live.
 
-Builds write loose files (`{prefix}{face}/{level}/{x}/{y}.{png,u16}`);
+Builds write loose files (`{prefix}{root}/{level}/{x}/{y}.{png,u16}`);
 packing adds PMTiles archives and a `storage` descriptor. A TileStore reads
 the loose file when it exists and otherwise the archive, so loose tiles can
 be deleted once a dataset is packed and later builds still find their base.
@@ -16,7 +16,7 @@ from pmtiles.tile import Compression
 
 from tile_service.runtime import atomic_write, read_json
 
-ADDRESS = re.compile(r"^((?:[a-zA-Z0-9_-]+/)*)([0-5])/(\d+)/(\d+)/(\d+)\.(png|u16)$")
+ADDRESS = re.compile(r"^((?:[a-zA-Z0-9_-]+/)*)([0-3])/(\d+)/(\d+)/(\d+)\.(png|u16)$")
 
 
 class TileStore:
@@ -57,9 +57,9 @@ class TileStore:
         match = ADDRESS.fullmatch(relative)
         if not match or not self.archives:
             return None
-        prefix, face, level, x, y, _ = match.groups()
+        prefix, root, level, x, y, _ = match.groups()
         with self._lock:
-            opened = self._archive(prefix + face)
+            opened = self._archive(prefix + root)
             if opened is None:
                 return None
             reader, _ = opened
@@ -74,9 +74,9 @@ class TileStore:
         match = ADDRESS.fullmatch(relative)
         if not match or not self.archives:
             return False
-        prefix, face, level, x, y, _ = match.groups()
+        prefix, root, level, x, y, _ = match.groups()
         with self._lock:
-            opened = self._archive(prefix + face)
+            opened = self._archive(prefix + root)
             if opened is None:
                 return False
             reader, _ = opened

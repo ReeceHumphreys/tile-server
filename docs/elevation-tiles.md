@@ -1,10 +1,8 @@
 # Streamed lunar elevation
 
-The globe prefers `data/moon/elevation-tiles/manifest.json`. When it exists, the
-viewer does not fetch the old 32 MiB global height blob or build its full browser
-bounds pyramid. A small fixed grid is still drawn once per selected terrain tile.
-Height data comes from a bounded numeric array texture, independently of imagery.
-If the tiled manifest is missing, the legacy LOLA/Wasm path remains available.
+The globe reads `data/moon/elevation-tiles/manifest.json`. A small fixed grid is drawn
+once per selected terrain tile. Height data comes from a bounded numeric array texture,
+independently of imagery.
 
 ## Prepare the coarse globe
 
@@ -13,7 +11,7 @@ uv run tile-service build moon/elevation moon/elevation-tiles
 ```
 
 `moon/elevation` downloads the pinned NASA LOLA grid; `moon/elevation-tiles`
-converts it into cube-face uint16 tiles.
+converts it into uint16 tiles.
 Default core size is 128, gutter is 2, and the complete global pyramid ends at
 level 4: 2,046 files, approximately 68 MiB of uncompressed samples on disk.
 This preserves the source's broad relief rather than inventing higher resolution.
@@ -25,7 +23,7 @@ base preserves published regional refinements.
 
 The native tool reads the 32 MiB source once offline. That source is not kept in
 the browser when tiled mode is active. Source hashes, output ranges and tile
-checksums are recorded. Pixel rows are north-to-south, face addressing is bottom
+checksums are recorded. Pixel rows are north-to-south, root addressing is bottom
 left, and values decode as `uint16 * 0.5 - 10000` meters above the 1,737,400 m
 reference sphere. The quantization step is 0.5 m; it is not centimeter terrain.
 
@@ -99,10 +97,16 @@ Generate coarser regional data before overlapping finer NAC patches. Each region
 blends onto a frozen snapshot of the existing base. Updating that lower layer
 later does not rewrite an already baked higher layer. A different source/radius/
 scale/depth needs a new source ID/output; rerunning identical settings resumes it.
-For now the generator accepts regions of 100–20,000 m radius, within one cube
-face and at most 20,000 output tiles per job. It is a regional importer, not a
+For now the generator accepts regions of 100–20,000 m radius, within oneroot and at most 20,000 output tiles per job. It is a regional importer, not a
 command to build the full global SLDEM archive. Broader coverage can be prepared
 as separate regions; full-archive batch generation and parallelism remain future work.
+
+A region's DEM is normally on the body's sphere. On Earth it can instead be on the WGS84 or
+GRS80 ellipsoid, in any projection, such as a USGS 1 m DEM in UTM: the importer first warps
+the site disk onto Earth's sphere, carrying geodetic degrees over unchanged, as NAIP imagery
+does. Heights must already be above the ellipsoid; `inputOffset` can add a geoid height that
+is constant over the site. `earth/starbase-elevation` does this with the GEOID18 height at
+Starbase.
 
 ## Runtime and bounds
 
@@ -111,7 +115,7 @@ as separate regions; full-archive batch generation and parallelism remain future
   looking toward the horizon.
 - The cache holds 64 height tiles plus a zero-meter fallback slot. At 132×132
   RG8 samples this is about 2.2 MiB on the GPU, plus CPU samples and upload bytes.
-- Detailed metadata is paged under coarse cube addresses. At most 16 pages are
+- Detailed metadata is paged under coarse addresses. At most 16 pages are
   resident; the application does not load a whole finest-resolution catalog.
   Page checksums, paths, ancestor chains and ranges are validated before use.
 - Finer heights fade from the ready parent over 300 ms. CPU camera clearance,
@@ -128,7 +132,7 @@ as separate regions; full-archive batch generation and parallelism remain future
   mipmaps. Two-pixel overscan supplies neighboring height samples. Per-tile skirts
   cover remaining geometry/LOD cracks; this is not explicit edge stitching.
 - Relief normals sample the same tiled height blend. Local UV transforms avoid
-  multiplying fine face coordinates into large texture offsets. Normal tangents
+  multiplying fine root coordinates into large texture offsets. Normal tangents
   are differentiated on the sphere rather than subtracting planet-sized positions.
 - Image and height bindings share one interleaved instance buffer. The geometry
   still uses eight vertex-buffer bindings, now with sixteen vertex attributes.

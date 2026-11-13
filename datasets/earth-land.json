@@ -1,0 +1,23 @@
+{
+  "id": "natural-earth-land-10m",
+  "body": "Earth",
+  "title": "Natural Earth land, drawn as a two-tone map",
+  "sourceUrl": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/v5.1.2/geojson/ne_10m_land.geojson",
+  "sourcePage": "https://www.naturalearthdata.com/downloads/10m-physical-vectors/10m-land/",
+  "credit": "Made with Natural Earth. Public domain.",
+  "sourceFile": "earth/ne_10m_land.geojson",
+  "radiusMeters": 6378137,
+  "nativeResolutionMeters": 1223,
+  "coverage": {
+    "west": -180,
+    "east": 180,
+    "south": -90,
+    "north": 90
+  },
+  "quantity": "Two-tone map: grey land on a dark sea, with no daylight in the picture",
+  "tileSize": 256,
+  "gutter": 2,
+  "maxLevel": 6,
+  "expectedBytes": 10157965,
+  "sha256": "1ac90796408bc6ad6911d69448485d3c4dbf2190370080368a09976e1c9f7416"
+}

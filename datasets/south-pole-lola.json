@@ -9,12 +9,12 @@
       "latitudeDeg": -89.67,
       "longitudeDeg": 129.78,
       "radiusMeters": 16000,
-      "maxLevel": 13,
+      "maxLevel": 14,
       "overview": {
         "latitudeDeg": -90,
         "longitudeDeg": 0,
         "radiusMeters": 44000,
-        "maxLevel": 11
+        "maxLevel": 12
       },
       "featherMeters": 4000,
       "nativeResolutionMeters": 5,

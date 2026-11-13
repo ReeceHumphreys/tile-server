@@ -33,7 +33,7 @@ def archive_tiles(root, storage, paths):
             data = reader.get(int(level), int(x), int(y.split(".")[0]))
             if reader.header()["tile_compression"] == Compression.GZIP:
                 data = gzip.decompress(data)
-            assert reader.metadata()["profile"] == "normalized-cube-v1"
+            assert reader.metadata()["profile"] == "geographic-polar-v1"
             yield path, data
 
 
@@ -43,7 +43,7 @@ def test_pack_exact_imagery_and_reuse(source, tmp_path):
     path = output / "manifest.json"
     pack_document(path)
     storage = load(path)["storage"]
-    assert len(storage["archives"]) == 6
+    assert len(storage["archives"]) == 4
     paths = [p.relative_to(output).as_posix() for p in output.rglob("*.png")]
     expected = {path: (output / path).read_bytes() for path in paths}
     stamps = [(output / path).stat().st_mtime_ns for path in storage["archives"].values()]
@@ -78,6 +78,7 @@ def test_pack_paged_heights_and_corruption(tmp_path):
             "format": "uint16-le",
             "scaleMeters": 0.5,
             "offsetMeters": -10000,
+            "verticalDatum": "sphere",
             "width": 32,
             "height": 16,
             "data": "source.u16",
@@ -92,13 +93,13 @@ def test_pack_paged_heights_and_corruption(tmp_path):
     paths = [info["path"] for info in manifest["tiles"].values()]
     expected = {path: (output / path).read_bytes() for path in paths}
     manifest["pages"], manifest["pageLevel"] = {}, 0
-    for face in range(6):
+    for root in range(4):
         fine = {
-            key: info for key, info in manifest["tiles"].items() if key.startswith(f"{face}/1/")
+            key: info for key, info in manifest["tiles"].items() if key.startswith(f"{root}/1/")
         }
         for key in fine:
             del manifest["tiles"][key]
-        name, prefix = f"page-{face}.json", f"{face}/0/0/0"
+        name, prefix = f"page-{root}.json", f"{root}/0/0/0"
         save(output / name, {"tiles": fine})
         manifest["pages"][prefix] = {
             "path": name,
@@ -141,7 +142,7 @@ def test_regional_archive_and_static_release(source, tmp_path):
         root / "moon/regions",
         {**SITE, "id": "site-one"},
         0,
-        0,
+        90,
         1000,
         3,
     )
@@ -153,8 +154,8 @@ def test_regional_archive_and_static_release(source, tmp_path):
         dict(archive_tiles(root / "moon/regions/site-one", storage, [tile]))[tile]
         == (root / "moon/regions/site-one" / tile).read_bytes()
     )
-    # Private-mode legacy archives must be copied with readable deployment
-    # permissions without changing the build files' permissions.
+    # Private archives are copied with readable deployment permissions, without
+    # changing the build files' permissions.
     private_archive = output / next(
         iter(load(output / "manifest.json")["storage"]["archives"].values())
     )
@@ -163,10 +164,10 @@ def test_regional_archive_and_static_release(source, tmp_path):
     (root / "private.txt").write_text("private")
     export(root, release)
     assets = list(release.rglob("*"))
-    assert len(list(release.rglob("*.pmtiles"))) == 7
+    assert len(list(release.rglob("*.pmtiles"))) == 5
     assert not any(p.suffix in (".png", ".u16", ".tif") or p.name == "private.txt" for p in assets)
     assert not list(release.rglob("*.part"))
-    assert load(release / "release.json")["assetCount"] == 9
+    assert load(release / "release.json")["assetCount"] == 7
     assert release.stat().st_mode & 0o005 == 0o005
     assert all(path.stat().st_mode & 0o004 for path in assets if path.is_file())
     assert private_archive.stat().st_mode & 0o777 == 0o600
@@ -200,7 +201,7 @@ def test_installed_cli_help_and_unknown_commands(tmp_path):
     assert "invalid choice" in run("unknown-command", ok=False)
     assert "--max-level" in run("build", "--help")
     assert "moon/wac" in run("list", "--workspace", tmp_path)
-    assert "No cube tilesets" in run("release", "--workspace", tmp_path, ok=False)
+    assert "No tilesets" in run("release", "--workspace", tmp_path, ok=False)
 
 
 def test_provenance_edits_republish_without_rebuilding(source, tmp_path):
@@ -215,45 +216,25 @@ def test_provenance_edits_republish_without_rebuilding(source, tmp_path):
         "sourcePage": "https://example.test/site",
         "nativeResolutionMeters": 0.5,
     }
-    regions.build(nac, base / "manifest.json", regional, site, 0, 0, 1000, 4)
+    regions.build(nac, base / "manifest.json", regional, site, 0, 90, 1000, 4)
     pack_document(regional / "catalog.json")
     tile = base / "0/0/0/0.png"
-    stamps = (tile.stat().st_mtime_ns, (regional / "site/0/4/8/8.png").stat().st_mtime_ns)
+    stamps = (tile.stat().st_mtime_ns, (regional / "site/1/4/8/8.png").stat().st_mtime_ns)
 
     retitled = {**WAC, "title": "Renamed mosaic", "credit": "New credit"}
     manifest = build(source, base, retitled)
     assert manifest["title"] == "Renamed mosaic" and manifest["source"]["credit"] == "New credit"
     assert manifest["storage"] == load(base / "manifest.json")["storage"]
     entry = regions.build(
-        nac, base / "manifest.json", regional, {**site, "credit": "New credit"}, 0, 0, 1000, 4
+        nac, base / "manifest.json", regional, {**site, "credit": "New credit"}, 0, 90, 1000, 4
     )
     assert entry["source"]["credit"] == "New credit" and entry["storage"]
     assert load(regional / "catalog.json")["sites"] == [entry]
-    assert (tile.stat().st_mtime_ns, (regional / "site/0/4/8/8.png").stat().st_mtime_ns) == stamps
+    assert (tile.stat().st_mtime_ns, (regional / "site/1/4/8/8.png").stat().st_mtime_ns) == stamps
     with pytest.raises(RuntimeError, match="another source/settings"):
         regions.build(
-            nac, base / "manifest.json", regional, {**site, "featherMeters": 50}, 0, 0, 1000, 4
+            nac, base / "manifest.json", regional, {**site, "featherMeters": 50}, 0, 90, 1000, 4
         )
-
-
-def test_older_build_records_still_resume(source, tmp_path):
-    base, regional = tmp_path / "base", tmp_path / "regional"
-    build(source, base)
-    state = load(base / "build-state.json")
-    old = {**state, "dataset": WAC, "strategy": "cached"}
-    del old["radiusMeters"]
-    save(base / "build-state.json", old)
-    build(source, base)
-    nac = fixture(tmp_path / "nac.tif", constant=200)
-    site = SITE
-    regions.build(nac, base / "manifest.json", regional, site, 0, 0, 1000, 4)
-    record = load(regional / "site/build-state.json")
-    for key in ("overview", "featherMeters", "base"):
-        del record[key]
-    record["baseManifestSha256"] = regions._manifest_hash(load(base / "manifest.json"))
-    record["sourceConfig"] = {**site, "sourceFile": "/elsewhere/nac.tif", "note": "edited"}
-    save(regional / "site/build-state.json", record)
-    regions.build(nac, base / "manifest.json", regional, site, 0, 0, 1000, 4)
 
 
 def test_regions_build_on_packed_bases_without_loose_tiles(source, tmp_path):
@@ -276,6 +257,7 @@ def test_regions_build_on_packed_bases_without_loose_tiles(source, tmp_path):
             "format": "uint16-le",
             "scaleMeters": 0.5,
             "offsetMeters": -10000,
+            "verticalDatum": "sphere",
             "width": 32,
             "height": 16,
             "data": "grid.u16",
@@ -295,9 +277,9 @@ def test_regions_build_on_packed_bases_without_loose_tiles(source, tmp_path):
             for loose in [*base.rglob("*.png"), *hts.rglob("*.u16")]:
                 loose.unlink()
         regions.build(
-            nac, base / "manifest.json", tmp_path / mode / "regional", site, 0, 0, 1000, 4
+            nac, base / "manifest.json", tmp_path / mode / "regional", site, 0, 90, 1000, 4
         )
-        heights.add_region(hts, dem, "patch", 0, 0, 500, max_level=3)
+        heights.add_region(hts, dem, "patch", 0, 90, 500, max_level=3)
         outputs[mode] = (tree(tmp_path / mode / "regional"), tree(hts / "patch"))
     assert outputs["loose"] == outputs["packed"] and outputs["packed"][0] and outputs["packed"][1]
     # The region retired the archives; packing again still has every tile.
@@ -321,7 +303,7 @@ def test_retiring_archives_restores_deleted_tiles(source, tmp_path):
     assert all(store.read(tile) == data for tile, data in expected.items())
 
 
-def test_documents_follow_the_globe_contract(source, tmp_path):
+def test_documents_follow_the_contract(source, tmp_path):
     base = build(source, tmp_path / "build/moon/base")
     nac = fixture(tmp_path / "nac.tif", constant=200)
     regions.build(
@@ -330,7 +312,7 @@ def test_documents_follow_the_globe_contract(source, tmp_path):
         tmp_path / "build/moon/regions",
         SITE,
         0,
-        0,
+        90,
         1000,
         4,
     )
@@ -345,6 +327,7 @@ def test_documents_follow_the_globe_contract(source, tmp_path):
             "format": "uint16-le",
             "scaleMeters": 0.5,
             "offsetMeters": -10000,
+            "verticalDatum": "sphere",
             "width": 32,
             "height": 16,
             "data": "grid.u16",
@@ -364,7 +347,7 @@ def test_documents_follow_the_globe_contract(source, tmp_path):
     parentless = {**site, "tiles": [key for key in site["tiles"] if key.split("/")[1] != "3"]}
     root = next(iter(height["tiles"]))
     rejected = [
-        ({**base, "textureUV": {"offset": 0.1, "scale": 0.8}}, None, "coordinate convention"),
+        ({**base, "tileSize": 0}, None, "Unsupported imagery"),
         ({**base, "storage": {"type": "pmtiles", "profile": "x", "archives": {}}}, None, "storage"),
         ({**catalog, "baseMaxLevel": 0}, base, "Incompatible"),
         ({**catalog, "sites": [{**site, "source": {}}]}, base, "Invalid regional imagery site"),
@@ -388,25 +371,11 @@ def test_documents_follow_the_globe_contract(source, tmp_path):
     pack_document(tmp_path / "build/moon/base/manifest.json")
     save(
         tmp_path / "build/moon/base/manifest.json",
-        {**load(tmp_path / "build/moon/base/manifest.json"), "minLevel": 1},
+        {**load(tmp_path / "build/moon/base/manifest.json"), "maxLevel": 21},
     )
-    with pytest.raises(RuntimeError, match="globe would reject"):
+    with pytest.raises(RuntimeError, match="Not a valid document"):
         export(tmp_path / "build", tmp_path / "release")
     assert not (tmp_path / "release").exists()
-
-
-def test_legacy_pyramid_stays_accepted_without_loose_tiles(source, tmp_path):
-    output = tmp_path / "base"
-    build(source, output)
-    pack_document(output / "manifest.json")
-    for tile in output.rglob("*.png"):
-        tile.unlink()
-    state = load(output / "build-state.json")
-    save(
-        output / "build-state.json",
-        {**state, "pipelineVersion": 2, "dataset": {"radiusMeters": state["radiusMeters"]}},
-    )
-    assert "storage" in build(source, output)
 
 
 def test_release_finds_targets_at_any_depth(source, tmp_path):
@@ -422,8 +391,8 @@ def test_rejected_region_keeps_its_real_error(source, tmp_path):
     base, regional = tmp_path / "base", tmp_path / "regional"
     nac = fixture(tmp_path / "nac.tif", constant=200)
     build(source, base)
-    regions.build(nac, base / "manifest.json", regional, SITE, 0, 0, 1000, 4)
+    regions.build(nac, base / "manifest.json", regional, SITE, 0, 90, 1000, 4)
     overlapping = {**SITE, "id": "other"}
     for _ in range(2):
         with pytest.raises(documents.InvalidDocument, match="overlapping"):
-            regions.build(nac, base / "manifest.json", regional, overlapping, 0, 0, 1000, 4)
+            regions.build(nac, base / "manifest.json", regional, overlapping, 0, 90, 1000, 4)

@@ -65,7 +65,7 @@ to have the build download the source itself. Regional imagery is another
 target with `"layer": "imagery-regions"`, a `base` target and a `sites` file;
 see `datasets/apollo-nac.json` for the site shape.
 
-Start with max level 2 to check all faces, longitude seam, poles, known landmarks,
+Start with max level 2 to check all roots, longitude seam, poles, known landmarks,
 and orientation. Increase depth only after checking the reprojection. The global
 builder currently supports levels 0–12, jobs 1–6, core power-of-two sizes 16–2048,
 and gutters 1–16. Tile counts grow as `6 * (4^(L+1) - 1) / 3`; plan storage before
@@ -88,15 +88,15 @@ The download is 12,742,411,029 bytes and lands at `data/raw/mars/mars-viking-mdi
 
 ## EOxCloudless 2020
 
-`s2cloudless-2020` is CC BY-NC-SA 4.0. A cube pyramid made from it stays under
+`s2cloudless-2020` is CC BY-NC-SA 4.0. A pyramid made from it stays under
 that license. Attribution, stored on the manifest, is: EOxCloudless
 https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus
 Sentinel data 2020). The license page allows stitched WMTS requests up to 4096 px
 each. The command downloads the WGS84 geographic matrix and writes one
 equirectangular GeoTIFF on the 6,378,137 m sphere. Published longitude and
 latitude stay the sphere's angles. Zoom 7 is the default: 32,768 tiles, about
-611 m per pixel, and cube levels 0–7. That is the same pyramid depth as the Moon
-WAC mosaic (131,070 tiles). On Earth the last cube level is about 390 m per
+611 m per pixel, and levels 0–7. That is the same pyramid depth as the Moon
+WAC mosaic (131,070 tiles). On Earth the last level is about 390 m per
 pixel, so it resamples this mosaic. Zoom 0–7 is accepted. A zoom-5 mosaic
 already at `data/raw/earth/s2cloudless-2020.tif` is left as it is.
 
@@ -106,7 +106,7 @@ uv run tile-service build earth/s2cloudless-2020-z7
 ```
 
 The target's `zoom` lives in `datasets/catalog.json`; another zoom is another
-target with its own `sourceFile`. Check faces with `--max-level 2 --output …`
+target with its own `sourceFile`. Check roots with `--max-level 2 --output …`
 before the full build. The download uses 16 fetchers. One failed tile does not
 stop the others, and a rerun skips tiles already saved.
 
@@ -118,8 +118,10 @@ visible next to the globe.
 
 Use a single-band georeferenced DEM on the same sphere, with heights relative to
 its radius. Convert datum differences before this step. Explicitly supply unit
-scale/offset when source values are not meters. The current encoding cannot
-represent heights outside −10000 to +22767.5 m; the tool rejects them.
+scale/offset when source values are not meters. Heights are stored at 0.5 m steps from
+an offset the dataset can set with `heightOffsetMeters` (default −10000 m), and a dataset
+declares its `verticalDatum`. Earth sets `geoid`, which adds the EGM2008 geoid so its
+heights are ellipsoidal, as the globe's WGS84 surface expects.
 
 The Earth example uses ETOPO 2022 ice surface at 60 arc-seconds (465,969,062 bytes, DOI 10.25921/fd45-gt74). The source is WGS 84 longitude and latitude with EGM2008 orthometric meters. Those angles are placed on the 6,378,137 m sphere and the meters become radial offsets. Deep trenches are clamped to −10000 m so they fit the shared uint16 encoding; the lunar encoder still rejects out-of-range samples. The prepared grid is 16,384 by 8,192, about 2.4 km per pixel, the finest grid the tool accepts. The browser global-grid path stops at 8,192 pixels, so the viewer loads the tiles and not that grid. `--dry-run` prints the download and writes nothing.
 
@@ -159,24 +161,15 @@ heights.add_region(
 ```
 
 Regional heights inherit body/radius from the base manifest and require matching
-source CRS. Detail caps are currently restricted to one cube face; high-detail
+source CRS. Detail caps are currently restricted to one root; high-detail
 radius is 100–20000 m. Optional `overview` and `feather` arguments add a larger
 coarse context cap. Sources worth keeping belong in a `height-regions` target. The base must be generated before regions. Runtime requests use
 parent fallback, and separately bounded imagery/elevation residency.
 
 ## Output contract
 
-Imagery addresses are `{face}/{level}/{x}/{y}.png`; each image includes gutters.
-The manifest records body, radius, axes, row order, UV transform, source hash and
-level range. Face order is +X, −X, +Y, −Y, +Z, −Z. Address Y increases upward in
-face space; image rows run top to bottom. Use the manifest conventions rather
-than assuming XYZ/Web Mercator coordinates.
-
-Height manifests describe little-endian uint16 tiles and conservative min/max
-metadata, optionally split into checksummed pages. Runtime verifies tile/page
-checksums. All six roots are required, with complete ancestor chains. Do not
-hand-edit generated bounds or hashes. See exported `ImageryManifest`,
-`RegionalCatalog`, and `HeightTileManifest` types for the exact schema.
+The [dataset contract](../spec/README.md) defines every published document and tile. Do not
+hand-edit generated bounds or hashes.
 
 Configure `createGlobe` with the generated manifest URLs and the **same body name
 and radius**. Keep dataset credits accessible in your application's UI. The Moon

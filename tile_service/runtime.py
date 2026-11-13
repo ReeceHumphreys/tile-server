@@ -2,12 +2,15 @@
 
 import hashlib
 import json
+import multiprocessing
 import os
 import re
 import signal
 import subprocess
 import threading
 import warnings
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from itertools import batched
 from pathlib import Path
 
 # Set before rasterio loads GDAL. One warp thread matches the old gdalwarp flags.
@@ -19,10 +22,14 @@ import rasterio
 from rasterio.enums import ColorInterp
 from rasterio.errors import NotGeoreferencedWarning
 
-# PNG tiles carry no geotransform; the cube frame is in the manifest.
+# PNG tiles carry no geotransform; the tile frame is in the manifest.
 warnings.filterwarnings("ignore", category=NotGeoreferencedWarning)
 
 RGBA = (ColorInterp.red, ColorInterp.green, ColorInterp.blue, ColorInterp.alpha)
+
+# Tiles are independent, so they spread over processes; below this it isn't worth starting them.
+POOL_MIN_TILES = 2000
+TILES_PER_TASK = 256
 
 stop = threading.Event()
 _log_lock = threading.Lock()
@@ -45,6 +52,43 @@ def install_signals():
 def check():
     if stop.is_set():
         raise RuntimeError("Build interrupted; rerun to resume.")
+
+
+def _ignore_interrupts():
+    # The parent stops a build at a safe point; workers finish the tile they are on.
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
+
+def tile_pool():
+    # Spawned, not forked: GDAL and a build's threads don't survive a fork.
+    return ProcessPoolExecutor(
+        max_workers=max(1, (os.cpu_count() or 2) - 2),
+        mp_context=multiprocessing.get_context("spawn"),
+        initializer=_ignore_interrupts,
+    )
+
+
+def run_tiles(work, addresses, *args, pool=None):
+    """Run `work(batch, *args)` over every address, in processes if there are enough.
+
+    `work` must be a module-level function that calls `check` between tiles.
+    """
+    batches = batched(addresses, TILES_PER_TASK)
+    if len(addresses) < POOL_MIN_TILES:
+        for batch in batches:
+            work(batch, *args)
+    elif pool is None:
+        with tile_pool() as own:
+            run_tiles(work, addresses, *args, pool=own)
+    else:
+        tasks = [pool.submit(work, batch, *args) for batch in batches]
+        try:
+            for task in as_completed(tasks):
+                check()
+                task.result()
+        finally:
+            for task in tasks:
+                task.cancel()
 
 
 def log(message):
@@ -70,7 +114,8 @@ def catalog_path(name):
 def atomic_write(path, data):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    temp = path.with_name(path.name + ".tmp")
+    # Pool workers can publish the same file at once, so each needs its own temp file.
+    temp = path.with_name(f"{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")
     if isinstance(data, str):
         temp.write_text(data, encoding="utf-8")
     else:

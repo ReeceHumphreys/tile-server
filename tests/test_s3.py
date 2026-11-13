@@ -79,21 +79,21 @@ def test_partial_upload_resumes_without_exposing_completion(store, release, monk
     assert s3.head(store, "test-tiles", "releases/v1/_complete.json") is None
     monkeypatch.setattr(store, "upload_file", upload)
     publish(release)
-    assert "6 verified/reused" in capsys.readouterr().out
+    assert "4 verified/reused" in capsys.readouterr().out
     assert s3.head(store, "test-tiles", "releases/v1/_complete.json")
 
 
 def test_multipart_upload_keeps_sha_metadata_and_correct_bytes(store, release):
     manifest_path = next(iter((release / "data").rglob("manifest.json")))
     manifest = json.loads(manifest_path.read_text())
-    face = next(iter(manifest["storage"]["archives"]))
-    old = manifest_path.parent / manifest["storage"]["archives"][face]
+    root = next(iter(manifest["storage"]["archives"]))
+    old = manifest_path.parent / manifest["storage"]["archives"][root]
     # Extra trailing bytes leave the fixture PMTiles offsets valid while forcing multipart upload.
     payload = old.read_bytes() + bytes(6 * 1024**2)
     digest = hashlib.sha256(payload).hexdigest()
-    new = old.with_name("face-" + digest + ".pmtiles")
+    new = old.with_name("root-" + digest + ".pmtiles")
     new.write_bytes(payload)
-    manifest["storage"]["archives"][face] = new.relative_to(manifest_path.parent).as_posix()
+    manifest["storage"]["archives"][root] = new.relative_to(manifest_path.parent).as_posix()
     manifest_path.write_text(json.dumps(manifest))
     publish(release)
     key = "releases/v1/" + new.relative_to(release).as_posix()

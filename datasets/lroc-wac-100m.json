@@ -5,6 +5,7 @@
   "sourcePage": "https://astrogeology.usgs.gov/search/map/moon_lro_lroc_wac_global_morphology_mosaic_100m",
   "credit": "LROC Team / Arizona State University; USGS Astrogeology Science Center",
   "sourceFile": "moon/lroc-wac-global-100m.tif",
+  "body": "Moon",
   "radiusMeters": 1737400,
   "nativeResolutionMeters": 100.0000418,
   "coverage": {
@@ -18,7 +19,7 @@
   "sourceSizeNote": "Verified 5,959,263,751 bytes (5.55 GiB); generated tiles require additional disk space.",
   "tileSize": 256,
   "gutter": 2,
-  "maxLevel": 7,
+  "maxLevel": 8,
   "expectedBytes": 5959263751,
   "sourceETag": "\"47d026c2618ee60e92eda4f2e0e5347b-711\""
 }

@@ -25,7 +25,7 @@ docker compose up -d --build --wait
 ```
 
 `release` packs every tileset into PMTiles (reusing unchanged archives), then scans `public/data/<body>/<dataset>/manifest.json` and `catalog.json`.
-`--workspace` selects another project directory. It validates every document with the globe's own rules (`tile_service.documents`, ported from `globes/src/imagery/manifest.ts`, `imagery/regions.ts` and `elevation/tiles.ts`) and rejects anything the globe would refuse, unpacked cube datasets, missing
+`--workspace` selects another project directory. It validates every document against the [dataset contract](../spec/README.md) and rejects anything it forbids, unpacked datasets, missing
 files, paths escaping the root, and mismatched archive/page checksums. It exports
 only manifests, catalogs, referenced PMTiles, and height metadata pages under
 `data/`, preserving all existing request paths. `release.json` describes the release.
@@ -39,8 +39,7 @@ so later generation cannot change a deployed manifest. Do not modify completed
 content-addressed archives in place.
 
 Build directories still contain loose tiles, source receipts, and working state.
-They are not deployment directories. Legacy global height blobs are also omitted;
-deployed clients should use the tiled height manifests. Viewer-specific overview
+They are not deployment directories. Viewer-specific overview
 images and night-light assets remain the viewer application's responsibility.
 
 ## Runtime configuration

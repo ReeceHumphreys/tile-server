@@ -1,11 +1,9 @@
-"""Regional imagery: high-resolution disks blended over a global cube pyramid.
+"""Regional imagery: high-resolution disks blended over a global pyramid.
 
 Each region is written under `root/<id>/` and listed in `root/catalog.json`,
-which the globe reads alongside the base dataset.
+which readers take alongside the base dataset.
 """
 
-import hashlib
-import json
 import math
 from pathlib import Path
 
@@ -16,22 +14,31 @@ from rasterio.io import MemoryFile
 from rasterio.warp import reproject
 
 from tile_service import documents
-from tile_service.cube import Coverage, face_crs, tile_affine, tile_directions
-from tile_service.records import BuildRecord, pick
+from tile_service.records import BuildRecord
+from tile_service.roots import (
+    WEST,
+    Coverage,
+    bilinear,
+    require_warpable,
+    root_crs,
+    root_max_level,
+    root_width,
+    tile_affine,
+    tile_directions,
+)
 from tile_service.runtime import (
     atomic_json,
     check,
     gdal_version,
     log,
     read_json,
+    run_tiles,
     sha256,
     validate_imagery,
     write_png,
 )
 from tile_service.sources import PROVENANCE
 from tile_service.tile_store import TileStore
-
-REGION_ID = set("abcdefghijklmnopqrstuvwxyz0123456789-")
 
 
 def base_identity(base):
@@ -43,36 +50,14 @@ def base_identity(base):
         "tileSize": int(base["tileSize"]),
         "gutter": int(base["gutter"]),
         "maxLevel": int(base["maxLevel"]),
-        "pipelineVersion": base.get("pipelineVersion"),
+        "pipelineVersion": base.get("producer", {}).get("pipelineVersion"),
     }
-
-
-def _manifest_hash(base):
-    """Older records hashed the whole base manifest (without archive references)."""
-    unpacked = {key: value for key, value in base.items() if key != "storage"}
-    return hashlib.sha256((json.dumps(unpacked, indent=2) + "\n").encode()).hexdigest()
-
-
-def _upgrades(base):
-    def from_manifest_hash(old):
-        """Older records: base manifest hash, and the region's whole description."""
-        if old.get("baseManifestSha256") != _manifest_hash(base):
-            return None
-        config = old.get("sourceConfig") or {}
-        upgraded = pick(old, ("pipelineVersion", "sourceSha256"))
-        upgraded["base"] = base_identity(base)
-        upgraded.update(pick(old, ("latitudeDeg", "longitudeDeg", "radiusMeters", "maxLevel")))
-        upgraded.update(pick(config, ("overview", "featherMeters")))
-        upgraded["gdal"] = old.get("gdal")
-        return upgraded
-
-    return (from_manifest_hash,)
 
 
 def default_level(base, native_resolution):
     """Deepest level whose pixels are no finer than the source's."""
     radius, size = float(base["radiusMeters"]), int(base["tileSize"])
-    return int(math.ceil(math.log2(2 * radius / (size * native_resolution))))
+    return int(math.ceil(math.log2(root_width(WEST, radius) / (size * native_resolution))))
 
 
 def _read_image(store, tile, size):
@@ -98,22 +83,6 @@ def _complete(root, region_id, tiles):
         store.close()
 
 
-def _bilinear(image, xs, ys, band):
-    limit = image.shape[0] - 1
-    xs = np.clip(xs, 0, limit)
-    ys = np.clip(ys, 0, limit)
-    x0 = np.floor(xs).astype(np.int32)
-    y0 = np.floor(ys).astype(np.int32)
-    x1 = np.minimum(x0 + 1, limit)
-    y1 = np.minimum(y0 + 1, limit)
-    fx = xs - x0
-    fy = ys - y0
-    plane = image[:, :, band]
-    return (1 - fy) * ((1 - fx) * plane[y0, x0] + fx * plane[y0, x1]) + fy * (
-        (1 - fx) * plane[y1, x0] + fx * plane[y1, x1]
-    )
-
-
 def _warp_tile(src, address, width, radius, size, gutter):
     frame = np.zeros((src.count + 1, width, width), np.uint8)
     reproject(
@@ -121,9 +90,9 @@ def _warp_tile(src, address, width, radius, size, gutter):
         destination=frame,
         src_nodata=src.nodata,
         dst_transform=tile_affine(
-            address.face, address.level, address.x, address.y, size, gutter, radius
+            address.root, address.level, address.x, address.y, size, gutter, radius
         ),
-        dst_crs=face_crs(address.face, radius),
+        dst_crs=root_crs(address.root, radius),
         resampling=Resampling.average,
         dst_alpha=src.count + 1,
         num_threads=1,
@@ -170,7 +139,7 @@ def _match_gain(
         for band in range(used):
             source_band = 0 if bands == 1 else band
             over += frame[source_band]
-            under += _bilinear(fallback, px, py, band)
+            under += bilinear(fallback[:, :, band], px, py)
         total_over += float((over[mask] / used).sum())
         total_under += float((under[mask] / used).sum())
         count += int(mask.sum())
@@ -193,11 +162,11 @@ def _write_region_tile(
     distance = coverage.distance(vectors, radius)
     feather = coverage.weight(distance)
     alpha = frame[bands] / 255 * feather
-    under_alpha = _bilinear(fallback, px, py, 3) / 255
+    under_alpha = bilinear(fallback[:, :, 3], px, py) / 255
     final_alpha = alpha + under_alpha * (1 - alpha)
     output = np.zeros((4, width, width), np.uint8)
     for band in range(3):
-        under = _bilinear(fallback, px, py, band)
+        under = bilinear(fallback[:, :, band], px, py)
         over = frame[0 if bands == 1 else band] * gain
         mixed = np.where(
             final_alpha > 0,
@@ -209,6 +178,34 @@ def _write_region_tile(
     write_png(path, output, 3)
 
 
+def _write_batch(addresses, source, base_path, out, settings):
+    size, gutter, radius, coverage, gain, root_base = settings
+    base_tiles = TileStore(base_path.parent, read_json(base_path).get("storage"))
+    backgrounds = {}
+    try:
+        with rasterio.open(source) as src:
+            for address in addresses:
+                check()
+                ancestor = address.ancestor(root_base)
+                if ancestor.key not in backgrounds:
+                    backgrounds[ancestor.key] = _read_image(base_tiles, ancestor, size + 2 * gutter)
+                _write_region_tile(
+                    src,
+                    src.count,
+                    address,
+                    out / f"{address.key}.png",
+                    backgrounds[ancestor.key],
+                    root_base,
+                    size,
+                    gutter,
+                    radius,
+                    coverage,
+                    gain,
+                )
+    finally:
+        base_tiles.close()
+
+
 def build(source, base_path, root, config, latitude, longitude, extent, max_level=None):
     """Build (or resume) one region and add it to `root/catalog.json`.
 
@@ -216,7 +213,7 @@ def build(source, base_path, root, config, latitude, longitude, extent, max_leve
     `overview` disk, `featherMeters` and `replacesRegion`. Returns its entry.
     """
     region_id = config.get("id") or ""
-    if not region_id or not set(region_id) <= REGION_ID:
+    if not documents.SITE_ID.fullmatch(region_id):
         raise RuntimeError("Invalid region ID")
     missing = [
         key for key in ("name", "credit", "sourcePage") if not isinstance(config.get(key), str)
@@ -234,7 +231,7 @@ def build(source, base_path, root, config, latitude, longitude, extent, max_leve
     gutter = int(base["gutter"])
     base_level = int(base["maxLevel"])
     if not (
-        base.get("projection") == "normalized-cube"
+        base.get("projection") == "geographic-polar"
         and math.isfinite(radius)
         and radius > 0
         and 16 <= size <= 2048
@@ -257,6 +254,7 @@ def build(source, base_path, root, config, latitude, longitude, extent, max_leve
     addresses = coverage.tiles
     with rasterio.open(source) as src:
         validate_imagery(src, radius)
+        require_warpable(src, coverage.root, radius)
         bands = src.count
         identity = {
             "pipelineVersion": 1,
@@ -270,14 +268,19 @@ def build(source, base_path, root, config, latitude, longitude, extent, max_leve
             "featherMeters": config.get("featherMeters"),
             "gdal": gdal_version(),
         }
-        BuildRecord(out, identity, upgrades=_upgrades(base))
+        BuildRecord(out, identity)
         if (out / "manifest.json").exists() and _complete(root, region_id, addresses):
             log(f"Up to date: {out}")
             return _republish(root, config, base)
         base_tiles = TileStore(base_path.parent, base.get("storage"))
-        backgrounds = {}
-        stats_level = base_level + 1
-        while stats_level < max_level and 2 * radius / ((1 << stats_level) * size) > 80:
+        tile_root = coverage.root
+        root_base = root_max_level(tile_root, base_level)
+        deepest = root_max_level(tile_root, max_level)
+        stats_level = root_base + 1
+        while (
+            stats_level < deepest
+            and root_width(tile_root, radius) / ((1 << stats_level) * size) > 80
+        ):
             stats_level += 1
         gain = _match_gain(
             src,
@@ -285,35 +288,17 @@ def build(source, base_path, root, config, latitude, longitude, extent, max_leve
             addresses,
             base_tiles,
             stats_level,
-            base_level,
+            root_base,
             size,
             gutter,
             radius,
             coverage,
         )
         log(f"{region_id} brightness scale {gain}")
-        for index, address in enumerate(addresses, start=1):
-            check()
-            path = out / f"{address.key}.png"
-            if not path.exists():
-                ancestor = address.ancestor(base_level)
-                if ancestor.key not in backgrounds:
-                    backgrounds[ancestor.key] = _read_image(base_tiles, ancestor, size + 2 * gutter)
-                _write_region_tile(
-                    src,
-                    bands,
-                    address,
-                    path,
-                    backgrounds[ancestor.key],
-                    base_level,
-                    size,
-                    gutter,
-                    radius,
-                    coverage,
-                    gain,
-                )
-            if index % 100 == 0:
-                log(f"{index}/{len(addresses)} regional tiles ready")
+        base_tiles.close()
+    missing = [address for address in addresses if not (out / f"{address.key}.png").exists()]
+    settings = (size, gutter, radius, coverage, gain, root_base)
+    run_tiles(_write_batch, missing, source, base_path, out, settings)
     return _publish(root, base, config, coverage, identity, gain)
 
 

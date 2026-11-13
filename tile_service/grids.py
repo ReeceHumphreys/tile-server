@@ -12,9 +12,7 @@ import rasterio
 from rasterio.enums import Resampling
 from rasterio.warp import reproject
 
-from tile_service.cube import (
-    HEIGHT_MAX,
-    HEIGHT_MIN,
+from tile_service.roots import (
     HEIGHT_OFFSET,
     HEIGHT_SCALE,
     encode_heights,
@@ -46,11 +44,27 @@ def current(out, source, width, height):
     return False
 
 
-def _level_poles(encoded):
+def _level_poles(encoded, offset=HEIGHT_OFFSET):
     # One cylindrical row is the whole pole, so every longitude stores the same height.
     for row in (0, encoded.shape[0] - 1):
         encoded[row, :] = int(np.rint(encoded[row].astype(np.float64).mean()))
-    return height_range(encoded)
+    return height_range(encoded, HEIGHT_SCALE, offset)
+
+
+def _geoid_on_grid(path, radius, width, height):
+    """Geoid height above the ellipsoid at each grid sample."""
+    undulation = np.zeros((height, width), np.float32)
+    with rasterio.open(path) as geoid:
+        reproject(
+            source=rasterio.band(geoid, 1),
+            destination=undulation,
+            dst_transform=equirect_affine(radius, width, height),
+            dst_crs=equirect_crs(radius),
+            resampling=Resampling.bilinear,
+            num_threads=1,
+            warp_mem_limit=128,
+        )
+    return undulation
 
 
 def warp(
@@ -67,22 +81,26 @@ def warp(
     credit="",
     source_page="",
     geographic=False,
+    offset=HEIGHT_OFFSET,
+    vertical_datum="sphere",
+    geoid=None,
 ):
     """Resample a one-band DEM onto the body's equirectangular grid.
 
     The source must use the body sphere, or with `geographic` any
     longitude/latitude CRS; geographic samples beyond the encoding are clamped.
+    `geoid` is a raster of geoid heights: adding them makes heights ellipsoidal.
     """
     source, out = Path(source), Path(out)
     recorded_radius, radius = radius, float(radius)
-    scale, offset, missing = float(input_scale), float(input_offset), float(nodata_height)
+    scale, input_shift, missing = float(input_scale), float(input_offset), float(nodata_height)
     if not (
         body
         and math.isfinite(radius)
         and radius > 0
         and math.isfinite(scale)
         and scale > 0
-        and math.isfinite(offset)
+        and math.isfinite(input_shift)
         and math.isfinite(missing)
     ):
         raise RuntimeError("Invalid elevation source/body/units")
@@ -116,14 +134,16 @@ def warp(
         )
     values = grid[0]
     usable = (grid[1] > 0) & np.isfinite(values)
-    meters = values * scale + offset
+    meters = values * scale + input_shift
+    if geoid is not None:
+        meters = meters + _geoid_on_grid(geoid, radius, width, height)
     if geographic:
-        outside = usable & ((meters < HEIGHT_MIN) | (meters > HEIGHT_MAX))
-        # shortcut: trenches below -10000 m are stored as -10000 m. Raise the shared encoding before measuring deep ocean.
-        meters = np.clip(meters, HEIGHT_MIN, HEIGHT_MAX)
-        log(f"Clamped {int(np.count_nonzero(outside))} samples into [{HEIGHT_MIN}, {HEIGHT_MAX}] m")
-    encoded = encode_heights(np.where(usable, meters, missing))
-    low, high = _level_poles(encoded)
+        low, high = offset, 65535 * HEIGHT_SCALE + offset
+        outside = usable & ((meters < low) | (meters > high))
+        meters = np.clip(meters, low, high)
+        log(f"Clamped {int(np.count_nonzero(outside))} samples into [{low}, {high}] m")
+    encoded = encode_heights(np.where(usable, meters, missing), HEIGHT_SCALE, offset)
+    low, high = _level_poles(encoded, offset)
     out.mkdir(parents=True, exist_ok=True)
     raw = encoded.astype("<u2").tobytes()
     atomic_write(out / "heights.u16", raw)
@@ -134,7 +154,8 @@ def warp(
         "longitude": "-180-to-180-east",
         "pixelRegistration": "centers",
         "scaleMeters": HEIGHT_SCALE,
-        "offsetMeters": HEIGHT_OFFSET,
+        "offsetMeters": offset,
+        "verticalDatum": vertical_datum,
         "data": "heights.u16",
         "body": body,
         "radiusMeters": recorded_radius,
@@ -186,6 +207,7 @@ def lola(source, out, entry):
         "pixelRegistration": "centers",
         "scaleMeters": HEIGHT_SCALE,
         "offsetMeters": HEIGHT_OFFSET,
+        "verticalDatum": "sphere",
         "data": "heights.u16",
         "bytes": len(raw),
         "sourcePage": entry["sourcePage"],

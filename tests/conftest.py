@@ -9,7 +9,7 @@ import rasterio
 from rasterio.transform import Affine
 
 from tile_service import imagery
-from tile_service.cube import MOON_RADIUS, equirect_affine, equirect_crs, sphere_crs
+from tile_service.roots import MOON_RADIUS, equirect_affine, equirect_crs, sphere_crs
 from tile_service.runtime import catalog_path
 
 ROOT = Path(__file__).resolve().parents[1]

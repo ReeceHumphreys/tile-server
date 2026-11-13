@@ -87,7 +87,7 @@ def parser():
     build.add_argument("--max-level", type=int, help="override the deepest tile level")
     build.add_argument("--radius-meters", type=float, help="override a regional disk radius")
     build.add_argument("--site", action="append", help="only this regional site (repeatable)")
-    build.add_argument("--jobs", type=int, default=2, help="face workers for imagery (1..6)")
+    build.add_argument("--jobs", type=int, default=2, help="root workers for imagery (1..6)")
     build.add_argument("--dry-run", action="store_true", help="describe sources and outputs only")
     build.set_defaults(run=_build)
 

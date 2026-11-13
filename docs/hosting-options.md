@@ -7,12 +7,12 @@ benchmark. No cloud resources were created or data uploaded.
 ## Workload checked locally
 
 - 71 immutable archives, totaling 28,550,357,219 bytes (28.55 GB / 26.59 GiB).
-- Largest archive: 2,327,552,567 bytes (2.33 GB / 2.17 GiB), a Mars Viking face.
+- Largest archive: 2,327,552,567 bytes (2.33 GB / 2.17 GiB), a Mars Viking root.
 - 16 archives exceed 512 MiB; 17 exceed 512,000,000 bytes; 13 exceed 1 GiB.
   Vendor documentation often labels limits “MB”; retain margin when designing shards.
 - 474,186 addressed tiles; 20 archives have leaf directories.
 - Consumers read raw archive ranges with the existing PMTiles library, including
-  cube imagery and numeric elevation. A provider's geographic XYZ endpoint is
+  tiled imagery and numeric elevation. A provider's geographic XYZ endpoint is
   not automatically a replacement for this transport.
 
 The important distinction is between being able to store an archive, serve a

@@ -13,7 +13,7 @@ import rasterio
 from rasterio.enums import ColorInterp
 from rasterio.windows import Window
 
-from tile_service.cube import EARTH_RADIUS, equirect_affine, equirect_crs
+from tile_service.roots import EARTH_RADIUS, equirect_affine, equirect_crs
 from tile_service.runtime import atomic_json, check, log, read_json, run, sha256, stop
 
 # Geographic matrix from the EOX WMTS WGS84 set: level 0 is 2 by 1 tiles of 256.

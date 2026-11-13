@@ -3,13 +3,13 @@
 `datasets/catalog.json` maps each target name (its output directory under
 the build root) to a `layer` and its settings:
 
-  imagery          a global PNG cube pyramid          source
+  imagery          a global PNG pyramid          source
   grid             a global equirectangular DEM grid  source, width, height
   heights          a global uint16 height pyramid     grid (a grid target)
   imagery-regions  detail disks over imagery          base, sites
   height-regions   detail disks into heights          base, sites
 
-A `source` names a Source adapter (download, mosaic, wmts, naip); regional
+A `source` names a Source adapter (download, mosaic, wmts, naip, polygons); regional
 sites may carry their own. Adding a body, site or pack is a JSON change.
 Every layer resumes, and rebuilding a finished target only verifies it.
 Paths come from a `Workspace`; call these through it.
@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from tile_service import grids, heights, imagery, regions
-from tile_service.cube import Coverage
+from tile_service.roots import HEIGHT_OFFSET, Coverage
 from tile_service.runtime import check, log, read_json
 from tile_service.sources import Local, open_source
 
@@ -125,6 +125,9 @@ def _grid(ws, spec, out, opts):
         credit=entry.get("credit", ""),
         source_page=entry.get("sourcePage", ""),
         geographic=spec.get("geographic", False),
+        offset=entry.get("heightOffsetMeters", HEIGHT_OFFSET),
+        vertical_datum=entry.get("verticalDatum", "sphere"),
+        geoid=entry.get("geoid") and ws.source_path(entry["geoid"]),
     )
 
 
@@ -160,8 +163,8 @@ class _Region:
         if not 100 <= self.extent <= 20000:
             raise RuntimeError("Radius must be 100..20000 meters")
         self.level = opts.max_level if opts.max_level is not None else site.get("maxLevel")
-        if self.level is not None and not 1 <= self.level <= 16:
-            raise RuntimeError("Max level must be 1..16")
+        if self.level is not None and not 1 <= self.level <= 17:
+            raise RuntimeError("Max level must be 1..17")
         self.overview = site.get("overview")
         if self.overview and self.level is not None:
             self.overview = {
@@ -247,8 +250,8 @@ def _height_regions(ws, spec, out, opts):
         if opts.dry_run:
             continue
         base = read_json(out / "manifest.json")
-        if base.get("projection") != "normalized-cube" or base.get("format") != "uint16-le":
-            raise RuntimeError("Expected a numeric cube height base")
+        if base.get("projection") != "geographic-polar" or base.get("format") != "uint16-le":
+            raise RuntimeError("Expected a numeric height base")
         level = region.level or regions.default_level(base, site["nativeResolutionMeters"])
         entry = region.source.entry
         heights.add_region(

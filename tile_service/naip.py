@@ -9,7 +9,7 @@ import rasterio
 from rasterio.enums import ColorInterp, Resampling
 from rasterio.warp import reproject
 
-from tile_service.cube import EARTH_RADIUS, equirect_crs
+from tile_service.roots import EARTH_RADIUS, equirect_crs
 from tile_service.runtime import atomic_json, check, log, read_json, sha256
 
 # Geodetic degrees go onto the sphere as degrees. That is the cloudless mosaic's convention.

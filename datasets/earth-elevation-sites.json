@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "checkedDate": "2026-11-07",
+  "sites": [
+    {
+      "id": "starbase-dem",
+      "name": "Starbase",
+      "detail": "Orbital launch site, from the 2023 USGS Lower Rio Grande lidar. NAVD88 heights; inputOffset adds the GEOID18 geoid height at the site, giving heights above the NAD83(2011) ellipsoid, taken as WGS84.",
+      "product": "USGS_1M_14_x68y288_TX_LowerRioGrande_D22",
+      "nativeResolutionMeters": 1,
+      "sourceUrl": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/TX_LowerRioGrande_D22/TIFF/USGS_1M_14_x68y288_TX_LowerRioGrande_D22.tif",
+      "sourcePage": "https://www.fisheries.noaa.gov/inport/item/76197",
+      "expectedBytes": 107722285,
+      "sourceETag": "\"5ade0f88aaee6b31f863c98bbc222005\"",
+      "inputOffset": -21.275,
+      "credit": "U.S. Geological Survey, 3D Elevation Program, 2023 Lower Rio Grande lidar, public domain",
+      "latitudeDeg": 25.997,
+      "longitudeDeg": -97.157,
+      "radiusMeters": 2000,
+      "maxLevel": 17
+    }
+  ]
+}

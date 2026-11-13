@@ -1,8 +1,8 @@
-# Publish cube tiles with PMTiles
+# Publish tiles with PMTiles
 
-The globe reads PMTiles v3 archives directly using HTTP byte ranges. Its cube
+The globe reads PMTiles v3 archives directly using HTTP byte ranges. Its tile
 geometry, tile coordinates, elevation encoding, gutters, and GPU caches are
-unchanged. These archives use the `normalized-cube-v1` spatial profile, not a
+unchanged. These archives use the `geographic-polar-v1` spatial profile, not a
 Web Mercator map. Existing geographic PMTiles viewers cannot display them as maps.
 
 ## Build and publish
@@ -19,7 +19,7 @@ uv run tile-service release --output releases/v2
 rasters or regenerate pixels, and an unchanged tileset reuses its archives. The pinned Python writer is
 installed from `uv.lock`; the globe uses the npm `pmtiles` reader.
 
-The packer writes one archive per cube face. Numeric height tiles are also
+The packer writes one archive per root. Numeric height tiles are also
 partitioned by their existing source-path prefix, so adding regional terrain does
 not rewrite the global source archives. Regional imagery is packaged under each
 site directory. Height payloads use gzip inside PMTiles; PNG bytes are stored
@@ -39,29 +39,9 @@ available for readers of previous manifests. Cleanup is deliberately explicit.
 
 ## Manifest contract
 
-Imagery and height manifests retain all existing coordinate, source, and terrain
-metadata. A new optional descriptor selects archive transport:
-
-```json
-{
-  "storage": {
-    "type": "pmtiles",
-    "profile": "normalized-cube-v1",
-    "archives": {
-      "0": "pmtiles/0-<sha256>.pmtiles",
-      "1": "pmtiles/1-<sha256>.pmtiles"
-    }
-  }
-}
-```
-
-The example omits the other four face entries. Height keys include the source
-prefix, such as `lola/0`; sparse regional sources include only occupied faces.
-Each regional imagery site's descriptor is relative to that site's directory.
-
-Within each archive, Z is cube level, X is face-local X, and Y is face-local Y
-**without flipping it**. Y remains bottom-left/up. The archive's geographic header
-bounds are not the cube face's geographic footprint; consumers use the manifest.
+The [dataset contract](../spec/README.md#storage) defines the `storage` descriptor and how
+archives are addressed. Each regional imagery site's descriptor is relative to that site's
+directory, and sparse regional height sources include only occupied roots.
 
 The viewer still constructs logical `.png`/`.u16` URLs for cache identity. Its tile
 reader resolves those addresses into archive ranges; those individual files need
@@ -92,16 +72,3 @@ publishing changed metadata; `uv run tile-service release` repacks them.
 Archiving adds a second copy of build data on disk. It improves publication and
 file management; it does not by itself promise faster rendering or fewer HTTP
 requests. The reader caches archive directories separately from decoded tiles.
-
-## Initial migration verification
-
-The local Moon, Earth, Mars, and regional tilesets were packaged into 71 archives
-across 19 dataset/source groups (28,550,357,219 archive bytes). The production globe
-reader fetched 142 sample tiles through HTTP ranges, covering every archive, and
-each payload matched its loose original. Integration fixtures additionally delete
-the loose imagery and height tiles before checking every archived fixture tile.
-
-At the initial archive integration, 22 service tests and 123 globe tests passed,
-along with the globe production build. The service tests have since moved to
-pytest and the HTTP checks run against Caddy; see [deployment](deployment.md).
-Visual browser/GPU verification was unavailable during the initial migration.

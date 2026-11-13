@@ -32,7 +32,7 @@ from a **source**:
 
 | Layer             | Builds                               | Needs                     |
 | ----------------- | ------------------------------------ | ------------------------- |
-| `imagery`         | a global PNG cube pyramid            | `source`                  |
+| `imagery`         | a global PNG pyramid                 | `source`                  |
 | `grid`            | a global equirectangular DEM grid    | `source`, `width`, `height` |
 | `heights`         | a global uint16 height pyramid       | `grid` (a grid target)    |
 | `imagery-regions` | detail disks blended over imagery    | `base`, `sites`           |
@@ -40,7 +40,8 @@ from a **source**:
 
 Sources are `download` (pinned URL, size, ETag and receipt), `mosaic` (several
 downloads joined by a VRT), `wmts` (stitched EOxCloudless tiles) and `naip`
-(a site disk cut from pinned NAIP quads); `build --source FILE` substitutes a
+(a site disk cut from pinned NAIP quads) and `polygons` (pinned GeoJSON drawn
+as a two-tone raster); `build --source FILE` substitutes a
 local raster. A sites file lists regional sites; a site may carry its own
 `source`. The other `datasets/*.json` files pin source URLs, sizes and
 checksums. A new body, site or regional pack is a JSON change.
@@ -50,8 +51,8 @@ levels, toolchain). Editing titles or credits republishes manifests on the
 next build without touching tiles or packed archives.
 Regional targets accept `--site`, and `--max-level`/`--radius-meters` override
 defaults. `release` exports only referenced archives and metadata, verifies
-their hashes, and validates every manifest and catalog with the same rules as
-the globe's parsers. Once a dataset is packed its loose tiles may be deleted:
+their hashes, and validates every manifest and catalog against the
+[dataset contract](spec/README.md). Once a dataset is packed its loose tiles may be deleted:
 later builds, including regions over it, read its tiles from the PMTiles
 archives. A build that retires those archives, such as adding a height region,
 first writes the deleted tiles back so the dataset can be packed again.
@@ -130,7 +131,11 @@ uv build
 
 CI runs these checks and tests both container targets. The optional
 `TILE_TEST_URL` enables HTTP contract tests against an actual deployment.
-The globe's existing manifest paths and cube tile coordinates are unchanged.
+Tile coordinates stay root-local, one archive per root.
+
+The [dataset contract](spec/README.md) is all a reader or another publisher needs: nothing
+in it depends on this tool or on a globe. Its [conformance files](spec/conformance) test
+any implementation.
 
 See [docs/data.md](docs/data.md), [docs/tile-generation.md](docs/tile-generation.md),
 and [docs/elevation-tiles.md](docs/elevation-tiles.md). See

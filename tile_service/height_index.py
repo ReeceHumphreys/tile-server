@@ -1,6 +1,6 @@
 """The on-disk height pyramid: `manifest.json`, paged tile metadata, and uint16 tiles.
 
-A height index maps tile keys (`face/level/x/y`) to tile files with
+A height index maps tile keys (`root/level/x/y`) to tile files with
 conservative `lower`/`upper` bounds. Coarse levels sit inline in the manifest;
 finer levels live in checksummed pages under `metadata/`, loaded on demand.
 Everything that reads or writes that format goes through `HeightIndex`.
@@ -11,11 +11,14 @@ from pathlib import Path
 import numpy as np
 
 from tile_service import documents
-from tile_service.cube import (
+from tile_service.roots import (
+    ROOTS,
     Tile,
+    bilinear,
     decode_heights,
-    face_uv,
     height_range,
+    root_max_level,
+    root_uv,
 )
 from tile_service.runtime import atomic_json, atomic_write, read_json, sha256
 from tile_service.tile_store import TileStore
@@ -26,33 +29,6 @@ def read_values(path, count):
     if len(data) != count * 2:
         raise RuntimeError("Incorrect height tile byte count")
     return np.frombuffer(data, dtype="<u2").copy()
-
-
-def bilinear(values, width, height, xs, ys, wrap=False):
-    """Meters at fractional pixel positions of an encoded uint16 grid."""
-    values = np.asarray(values).reshape(height, width)
-    xs = np.asarray(xs, dtype=float)
-    ys = np.asarray(ys, dtype=float)
-    if not wrap:
-        xs = np.clip(xs, 0, width - 1)
-    ys = np.clip(ys, 0, height - 1)
-    ix = np.floor(xs).astype(np.int64)
-    iy = np.floor(ys).astype(np.int64)
-    fx = xs - ix
-    fy = ys - iy
-
-    def at(xx, yy):
-        if wrap:
-            xx = np.mod(xx, width)
-        else:
-            xx = np.clip(xx, 0, width - 1)
-        yy = np.clip(yy, 0, height - 1)
-        return values[yy, xx]
-
-    return decode_heights(
-        (1 - fy) * ((1 - fx) * at(ix, iy) + fx * at(ix + 1, iy))
-        + fy * ((1 - fx) * at(ix, iy + 1) + fx * at(ix + 1, iy + 1))
-    )
 
 
 class HeightIndex:
@@ -72,11 +48,16 @@ class HeightIndex:
         self._store = None
 
     @classmethod
-    def create(cls, root, *, body, radius, tile_size, gutter, max_level):
+    def create(cls, root, *, body, radius, tile_size, gutter, max_level, **encoding):
         return cls(
             root,
             documents.height_manifest(
-                body=body, radius=radius, tile_size=tile_size, gutter=gutter, max_level=max_level
+                body=body,
+                radius=radius,
+                tile_size=tile_size,
+                gutter=gutter,
+                max_level=max_level,
+                **encoding,
             ),
         )
 
@@ -117,6 +98,11 @@ class HeightIndex:
     @property
     def tile_width(self):
         return self.tile_size + 2 * self.gutter
+
+    @property
+    def encoding(self):
+        """Scale and offset, as `encode_heights` and `decode_heights` take them."""
+        return float(self.document["scaleMeters"]), float(self.document["offsetMeters"])
 
     @property
     def radius(self):
@@ -188,18 +174,18 @@ class HeightIndex:
         return np.frombuffer(data, dtype="<u2").copy()
 
     def complete_level(self):
-        """Deepest level at which every tile of all six faces is present inline."""
-        for face in range(6):
-            if f"{face}/0/0/0" not in self.tiles:
-                raise RuntimeError("Height base requires six roots")
+        """Deepest global level at which every root is complete inline."""
+        for root in ROOTS:
+            if f"{root}/0/0/0" not in self.tiles:
+                raise RuntimeError("Height base requires every root")
         complete = 0
-        for depth in range(1, 6):
-            count = 1 << depth
+        for depth in range(1, 7):
             if any(
-                f"{face}/{depth}/{x}/{y}" not in self.tiles
-                for face in range(6)
-                for y in range(count)
-                for x in range(count)
+                f"{root}/{level}/{x}/{y}" not in self.tiles
+                for root in ROOTS
+                for level in (root_max_level(root, depth),)
+                for y in range(1 << level)
+                for x in range(1 << level)
             ):
                 break
             complete = depth
@@ -211,7 +197,7 @@ class HeightIndex:
         # south-pole pack call into Python about 200 million times.
         if len(self._cache) > 64:
             self._cache.clear()
-        face_id, u, v = face_uv(vectors)
+        face_id, u, v = root_uv(vectors)
         if self.document.get("pages"):
             level = int(self.document["pageLevel"])
             count = 1 << level
@@ -245,7 +231,8 @@ class HeightIndex:
                     self._cache[key] = self.read(self.tiles[key]["path"])
                 xs = gutter + (u[mask] * count - x) * size - 0.5
                 ys = gutter + (1 - (v[mask] * count - y)) * size - 0.5
-                result[mask] = bilinear(self._cache[key], width, width, xs, ys)
+                grid = np.asarray(self._cache[key]).reshape(width, width)
+                result[mask] = decode_heights(bilinear(grid, xs, ys), *self.encoding)
                 pending[mask] = False
         if pending.any():
             raise RuntimeError("Height base is missing a tile")
@@ -258,7 +245,7 @@ class HeightIndex:
         target = self.root / path
         if not target.exists():
             atomic_write(target, np.ascontiguousarray(values.astype("<u2")).tobytes())
-        low, high = height_range(values)
+        low, high = height_range(values, *self.encoding)
         self.tiles[key] = {
             "path": path,
             "min": low,
@@ -280,7 +267,7 @@ class HeightIndex:
                     raise RuntimeError("Height hierarchy missing parent")
                 parent["lower"] = min(parent["lower"], child["lower"])
                 parent["upper"] = max(parent["upper"], child["upper"])
-        roots = [tiles[f"{face}/0/0/0"] for face in range(6)]
+        roots = [tiles[f"{root}/0/0/0"] for root in ROOTS]
         self.document["minMeters"] = min(root["lower"] for root in roots)
         self.document["maxMeters"] = max(root["upper"] for root in roots)
 

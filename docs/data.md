@@ -10,7 +10,7 @@ Use Python 3.12+, uv, and curl. The offline tool is the installable `tile_servic
 uv sync --locked
 ```
 
-The globes viewer does not use Python or GDAL. It reads these manifests over HTTP. Height bounds stay in globes at `native/elevation-bounds.wasm`. Finished tiles stay valid. A complete pipeline-version-2 pyramid is kept as-is; any other resumed build must match the current source and settings. See the [tile guide](tile-generation.md) for Mars and Earth.
+The globes viewer does not use Python or GDAL. It reads these manifests over HTTP. Finished tiles stay valid. A complete pipeline-version-2 pyramid is kept as-is; any other resumed build must match the current source and settings. See the [tile guide](tile-generation.md) for Mars and Earth.
 
 Every dataset is a build target in `datasets/catalog.json`, named after its
 output under `public/data`. `uv run tile-service list` shows them and their
@@ -31,17 +31,17 @@ uv run tile-service build moon/wac
 
 Downloads resume from a `.part` file, check size and the TIFF signature, and store a local SHA-256 receipt. That receipt detects local changes. It is not a publisher checksum.
 
-The build writes `public/data/moon/wac/` unless `--output` is set. One cached reprojection per cube face supplies the lower levels. Builds resume after interruption and write `manifest.json` only after every tile exists. Changing `--jobs` is resumable. Changing source, tile size, gutter, or level is not: use a new output directory.
+The build writes `public/data/moon/wac/` unless `--output` is set. One cached reprojection per root supplies the lower levels. Builds resume after interruption and write `manifest.json` only after every tile exists. Changing `--jobs` is resumable. Changing source, tile size, gutter, or level is not: use a new output directory.
 
 | Option        | Meaning                                                  |
 | ------------- | -------------------------------------------------------- |
-| `--jobs`      | Face workers, 1–6. Default 2                             |
+| `--jobs`      | Root workers, 1–6. Default 2                             |
 | `--max-level` | Deepest quadtree level, 0–12                             |
 | `--output`    | Another output directory, e.g. for a preview             |
 | `--source`    | A local raster instead of the catalog download           |
 
 Tile size (256) and gutter (2) come from the dataset file. Library callers can
-set them, PNG compression and face-cache retention on `tile_service.imagery.build`.
+set them, PNG compression and root-cache retention on `tile_service.imagery.build`.
 
 The viewer loads `/data/moon/wac/manifest.json` by default. Another pyramid:
 
@@ -68,10 +68,6 @@ heightMeters = uint16Sample * 0.5 - 10000
 Rows run north to south. Longitude spans −180° to +180°, pixel centers. The prepared range is −8,981.5 m to +10,685.5 m. Polar end rings are replaced by their longitude means so every longitude agrees at the pole. The original TIFF is kept. Do not use this derivative for measurements of those rings.
 
 The globe renders first. Elevation then loads in the background. The same global grid is sampled for every tile. Camera altitude is height above that field, with 10 m of clearance. That is radial clearance, not a collision mesh.
-
-Bounds for culling are built with `native/elevation-bounds.wasm`. If that module fails to load, `src/elevation/bounds.ts` builds the same arrays in TypeScript.
-
-The Wasm bounds kernel belongs to the globes renderer; this service does not build it.
 
 ## Checks
 
@@ -111,14 +107,14 @@ these receipts are locally computed, not publisher-provided SHA-256 checksums.
 | Apollo 17 | [Taurus–Littrow mosaic](https://data.lroc.im-ldi.com/lroc/view_rdr_product/NAC_DTM_APOLLO17_MOSAIC_120CM) | 1.2 m/pixel     | 1,917.7 MiB |
 
 The default region is a 2 km radius around each landing point. The data tool
-reprojects only its sparse cube tiles, starting one level below the existing WAC
+reprojects only its sparse tiles, starting one level below the existing WAC
 pyramid's finest tiles. Default maximum is level 15 for the 0.5 m sources and 14
-for Apollo 17; tile sampling varies over the cube sphere and is separate from
+for Apollo 17; tile sampling varies with latitude and is separate from
 source resolution. Extra terrain subdivision cannot create additional photo detail.
 The full source TIFF is downloaded once; this is not a remote cropped-TIFF service.
 
 Options: `--radius-meters 100..20000`, `--max-level 1..16`, `--output /path/apollo`. Generation rejects more than 20,000 regional tiles or a
-region crossing a cube-face edge. All current Apollo sites fit within one face.
+region crossing a root edge. All current Apollo sites fit within one root.
 Use the normal level-7 WAC base. Another radius/depth/source requires a new output
 directory, avoiding stale tiles; rerunning identical settings resumes completed PNGs.
 Run site builds sequentially; one `build moon/apollo` handles that for you.
@@ -152,7 +148,7 @@ remains the existing ~1.9 km LOLA grid; these are higher-resolution images only.
 ## Earth sites
 
 Starbase and Kennedy Space Center use the same regional catalog as the Apollo
-photographs: extra cube tiles above the global pyramid, same `{face}/{level}/{x}/{y}.png`
+photographs: extra tiles above the global pyramid, same `{root}/{level}/{x}/{y}.png`
 addresses, no second imagery cache. The base is the level-7 s2cloudless-2020 pyramid.
 Each site is a 2 km disk at levels 8–16 (about 0.8 m per pixel at the finest level).
 
@@ -183,9 +179,7 @@ uv run tile-service build moon/elevation-tiles
 uv run tile-service build moon/apollo-elevation --site apollo12-dtm
 ```
 
-When the tiled manifest exists, the viewer uses it in place of downloading the
-full global height blob. The old global grid and its Wasm bounds builder are
-retained as a compatibility fallback. Apollo 12 terrain is already prepared locally.
+Apollo 12 terrain is already prepared locally.
 
 ### Inspecting the poles
 
@@ -234,8 +228,8 @@ first, as described above. All four NAC quadrants are required because the
 Shackleton region crosses the geographic pole. Their individual source hashes
 are preserved in the region's provenance.
 
-Default context tiles stop at cube level 11, about 6.63 m/pixel for imagery at
-the pole. Shackleton detail stops at level 13, about 1.66 m/pixel; the source
+Default context tiles stop at global level 12, about 5.2 m/pixel for imagery at
+the pole. Shackleton detail stops at level 14, about 1.3 m/pixel; the source
 remains 1 m/pixel. Height tiles use the existing numeric encoding and the same
 two coverage tiers. Override `--radius-meters` or `--max-level` per target to
 choose another cost/detail balance. Oversized requests are rejected before

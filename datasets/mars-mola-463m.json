@@ -7,6 +7,7 @@
   "credit": "NASA GSFC / MOLA; USGS Astrogeology Science Center. Public domain.",
   "sourceFile": "mars/mars-mola-463m.tif",
   "radiusMeters": 3396190,
+  "verticalDatum": "areoid",
   "nativeResolutionMeters": 463,
   "inputScale": 1,
   "inputOffset": 0,

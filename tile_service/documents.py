@@ -1,65 +1,44 @@
-"""The published documents: the contract with the globe.
+"""The published documents.
 
-Three JSON documents are published: an imagery manifest, a regional
-catalog over one imagery manifest, and a height manifest. This module builds
-their fixed parts, says which is which, lists the files each references, and
-validates them with the same rules as the globe's parsers
-(`globes/src/imagery/manifest.ts`, `imagery/regions.ts`, `elevation/tiles.ts`,
-`tiles/tile-source.ts`), so a release never contains what the globe rejects.
+Three JSON documents are published: an imagery manifest, a regional catalog over one imagery
+manifest, and a height manifest. This module builds their fixed parts, says which is which,
+lists the files each references, and validates them against `spec/README.md`, so a release
+never contains what the contract forbids. `spec/conformance/documents.json` checks it.
 """
 
 import math
 import re
 from pathlib import Path
 
-from tile_service.cube import HEIGHT_MAX, HEIGHT_MIN, HEIGHT_OFFSET, HEIGHT_SCALE
+from tile_service.roots import ROOTS, root_max_level
 
-PROFILE = "normalized-cube-v1"
+PROFILE = "geographic-polar-v1"
 HASHED_NAME = re.compile(r".*-([a-f0-9]{64})")
-KEY = re.compile(r"^[0-5]/\d+/\d+/\d+$")
+KEY = re.compile(r"^[0-3]/\d+/\d+/\d+$")
 SITE_ID = re.compile(r"^[a-z0-9-]+$")
 SHA256 = re.compile(r"^[a-f0-9]{64}$")
-ARCHIVE_KEY = re.compile(r"^(?:[a-zA-Z0-9_-]+/)*[0-5]$")
-ARCHIVE_PATH = re.compile(r"^(?:[a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\.pmtiles$")
-HEIGHT_PATH = re.compile(r"^([a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\.u16$")
-PAGE_PATH = re.compile(r"^([a-zA-Z0-9_-]+/)*[a-zA-Z0-9_-]+\.json$")
+PATH_PART = r"[a-zA-Z0-9_-][a-zA-Z0-9._-]*"
+ARCHIVE_KEY = re.compile(rf"^(?:{PATH_PART}/)*[0-3]$")
+ARCHIVE_PATH = re.compile(rf"^(?:{PATH_PART}/)*{PATH_PART}\.pmtiles$")
+HEIGHT_PATH = re.compile(rf"^(?:{PATH_PART}/)*{PATH_PART}\.u16$")
+PAGE_PATH = re.compile(rf"^(?:{PATH_PART}/)*{PATH_PART}\.json$")
 
-# Fixed conventions every imagery manifest carries; the globe checks them.
-IMAGERY_CONVENTIONS = {
-    "version": 1,
-    "body": "Moon",
-    "projection": "normalized-cube",
-    "faces": [
-        {"id": 0, "name": "+X", "normal": [1, 0, 0], "uAxis": [0, 0, -1], "vAxis": [0, 1, 0]},
-        {"id": 1, "name": "-X", "normal": [-1, 0, 0], "uAxis": [0, 0, 1], "vAxis": [0, 1, 0]},
-        {"id": 2, "name": "+Y", "normal": [0, 1, 0], "uAxis": [1, 0, 0], "vAxis": [0, 0, -1]},
-        {"id": 3, "name": "-Y", "normal": [0, -1, 0], "uAxis": [1, 0, 0], "vAxis": [0, 0, 1]},
-        {"id": 4, "name": "+Z", "normal": [0, 0, 1], "uAxis": [1, 0, 0], "vAxis": [0, 1, 0]},
-        {"id": 5, "name": "-Z", "normal": [0, 0, -1], "uAxis": [-1, 0, 0], "vAxis": [0, 1, 0]},
-    ],
-    "axes": {"north": "+Y", "longitude0": "+X", "longitude90East": "-Z"},
-    "addressing": {
-        "origin": "bottom-left in face-local UV",
-        "yDirection": "up",
-        "template": "{face}/{level}/{x}/{y}.png",
-    },
-    "imageRowOrder": "top-to-bottom",
-    "textureFlipY": True,
-    "minLevel": 0,
-    "format": "png",
-    "channels": "RGBA",
-    "noData": "alpha=0; retain coarser imagery underneath",
-    "colorSpace": "srgb",
-    "resampling": "average",
-    "sampler": {
-        "minFilter": "linear",
-        "magFilter": "linear",
-        "generateMipmaps": False,
-        "anisotropy": 1,
-        "wrapS": "clamp-to-edge",
-        "wrapT": "clamp-to-edge",
-    },
-}
+# The contract's limits.
+MAX_LEVEL = 20
+MAX_SITE_LEVEL = 17
+MAX_IMAGE_TILE_SIZE = 2048
+MAX_IMAGE_GUTTER = 16
+HEIGHT_TILE_SIZES = (16, 256)
+HEIGHT_GUTTERS = (2, 8)
+MAX_HEIGHT_TILES = 200000
+MAX_PAGE_LEVEL = 6
+MAX_PAGES = 8192
+MAX_ARCHIVES = 4096
+MAX_SITES = 64
+MAX_SITE_TILES = 20000
+
+# Optional fields only readers of people's text use. Optional means absent, not null.
+DESCRIPTION = ("title", "coverage", "quantity", "nativeResolutionMeters", "source", "producer")
 
 # Catalog fields that must match the base imagery manifest.
 CATALOG_BASE_KEYS = ("baseId", "baseMaxLevel", "tileSize", "gutter")
@@ -68,32 +47,24 @@ CATALOG_BASE_KEYS = ("baseId", "baseMaxLevel", "tileSize", "gutter")
 # Building ----------------------------------------------------------------------
 
 
-def imagery_manifest(
-    dataset, *, radius, tile_size, gutter, max_level, source, generation, toolchain
-):
-    """An imagery manifest: conventions, dataset description, geometry and provenance."""
-    manifest = dict(IMAGERY_CONVENTIONS)
-    for key in ("id", "title", "coverage", "nativeResolutionMeters", "quantity"):
-        manifest[key] = dataset.get(key)
-    image = tile_size + 2 * gutter
-    manifest.update(
-        {
-            "radiusMeters": radius,
-            "body": dataset.get("body") or "Moon",
-            "tileSize": tile_size,
-            "gutter": gutter,
-            "imageSize": image,
-            "maxLevel": max_level,
-            "tileCount": 2 * ((1 << (2 * (max_level + 1))) - 1),
-            "textureUV": {"offset": gutter / image, "scale": tile_size / image},
-            "faceCenterMetersPerPixelAtMaxLevel": 2 * radius / (tile_size * (1 << max_level)),
-            "source": source,
-            "pipelineVersion": toolchain["pipelineVersion"],
-            "toolchain": {"implementation": "Python", "gdal": toolchain["gdal"]},
-            "generation": generation,
-        }
-    )
-    return manifest
+def imagery_manifest(dataset, *, radius, tile_size, gutter, max_level, source, producer):
+    """An imagery manifest. `producer` is this tool's own record; readers ignore it."""
+    described = ("title", "coverage", "nativeResolutionMeters", "quantity")
+    return {
+        "version": 2,
+        "id": dataset["id"],
+        "body": dataset["body"],
+        "radiusMeters": radius,
+        "projection": "geographic-polar",
+        "format": "png",
+        "colorSpace": "srgb",
+        "tileSize": tile_size,
+        "gutter": gutter,
+        "maxLevel": max_level,
+        **{key: dataset[key] for key in described if dataset.get(key) is not None},
+        "source": source,
+        "producer": producer,
+    }
 
 
 def regional_catalog(base):
@@ -110,16 +81,17 @@ def regional_catalog(base):
     }
 
 
-def height_manifest(*, body, radius, tile_size, gutter, max_level):
+def height_manifest(*, body, radius, tile_size, gutter, max_level, scale, offset, vertical_datum):
     """An empty height manifest; `HeightIndex` fills and publishes it."""
     return {
-        "version": 1,
+        "version": 2,
         "body": body,
         "radiusMeters": radius,
-        "projection": "normalized-cube",
+        "projection": "geographic-polar",
         "format": "uint16-le",
-        "scaleMeters": HEIGHT_SCALE,
-        "offsetMeters": HEIGHT_OFFSET,
+        "scaleMeters": scale,
+        "offsetMeters": offset,
+        "verticalDatum": vertical_datum,
         "sources": [],
         "tileSize": tile_size,
         "gutter": gutter,
@@ -135,7 +107,7 @@ def kind(document):
     """ "imagery", "heights", "regions", or None for anything else."""
     if "sites" in document:
         return "regions"
-    if document.get("projection") == "normalized-cube":
+    if document.get("projection") == "geographic-polar":
         return "heights" if document.get("format") == "uint16-le" else "imagery"
     return None
 
@@ -194,16 +166,18 @@ def _body(document):
     )
 
 
-def validate_storage(storage):
-    if storage is None:
+def _validate_storage(owner):
+    """`storage` is optional, and optional means absent: null is invalid."""
+    if "storage" not in owner:
         return
+    storage = owner["storage"]
     archives = storage.get("archives") if isinstance(storage, dict) else None
     _require(
         isinstance(storage, dict)
         and storage.get("type") == "pmtiles"
         and storage.get("profile") == PROFILE
         and isinstance(archives, dict)
-        and 0 < len(archives) <= 4096,
+        and 0 < len(archives) <= MAX_ARCHIVES,
         "Invalid PMTiles storage descriptor.",
     )
     for key, path in archives.items():
@@ -215,33 +189,24 @@ def validate_storage(storage):
 
 def validate_imagery(m):
     size, gutter = m.get("tileSize"), m.get("gutter")
-    image, uv = m.get("imageSize"), m.get("textureUV") or {}
-    axes, addressing = m.get("axes") or {}, m.get("addressing") or {}
     _require(
-        m.get("version") == 1
+        m.get("version") == 2
+        and isinstance(m.get("id"), str)
+        and m["id"] != ""
         and _body(m)
-        and m.get("projection") == "normalized-cube"
-        and axes.get("north") == "+Y"
-        and axes.get("longitude0") == "+X"
-        and axes.get("longitude90East") == "-Z"
-        and addressing.get("template") == "{face}/{level}/{x}/{y}.png"
-        and addressing.get("yDirection") == "up"
-        and m.get("textureFlipY") is True
+        and m.get("projection") == "geographic-polar"
         and m.get("format") == "png"
         and m.get("colorSpace") == "srgb"
-        and m.get("minLevel") == 0
         and _integer(m.get("maxLevel"))
-        and 0 <= m["maxLevel"] <= 20
+        and 0 <= m["maxLevel"] <= MAX_LEVEL
         and _integer(size)
-        and 1 <= size <= 2048
+        and 1 <= size <= MAX_IMAGE_TILE_SIZE
         and _integer(gutter)
-        and 1 <= gutter <= 16
-        and image == size + 2 * gutter
-        and uv.get("offset") == gutter / image
-        and uv.get("scale") == size / image,
-        "Unsupported globe imagery manifest or coordinate convention.",
+        and 1 <= gutter <= MAX_IMAGE_GUTTER
+        and all(m.get(key, True) is not None for key in DESCRIPTION),
+        "Unsupported imagery manifest.",
     )
-    validate_storage(m.get("storage"))
+    _validate_storage(m)
 
 
 def validate_regions(c, base):
@@ -255,7 +220,7 @@ def validate_regions(c, base):
         and c.get("tileSize") == base.get("tileSize")
         and c.get("gutter") == base.get("gutter")
         and isinstance(sites, list)
-        and len(sites) <= 64,
+        and len(sites) <= MAX_SITES,
         "Incompatible regional imagery catalog.",
     )
     ids, addresses = set(), set()
@@ -274,9 +239,9 @@ def validate_regions(c, base):
             and _number(site.get("radiusMeters"))
             and site["radiusMeters"] > 0
             and _integer(site.get("maxLevel"))
-            and base["maxLevel"] < site["maxLevel"] <= 16
+            and base["maxLevel"] < site["maxLevel"] <= MAX_SITE_LEVEL
             and isinstance(site.get("tiles"), list)
-            and len(site["tiles"]) <= 20000
+            and len(site["tiles"]) <= MAX_SITE_TILES
             and isinstance(source, dict)
             and isinstance(source.get("sourcePage"), str)
             and isinstance(source.get("credit"), str)
@@ -284,17 +249,19 @@ def validate_regions(c, base):
             and source["nativeResolutionMeters"] > 0,
             f"Invalid regional imagery site: {site.get('id') if isinstance(site, dict) else site}",
         )
-        validate_storage(site.get("storage"))
+        _validate_storage(site)
         ids.add(site["id"])
         own = set()
         for key in site["tiles"]:
             _require(isinstance(key, str) and KEY.match(key), "Invalid regional tile address.")
-            face, level, x, y = (int(part) for part in key.split("/"))
+            root, level, x, y = (int(part) for part in key.split("/"))
             _require(
-                base["maxLevel"] < level <= site["maxLevel"]
+                root_max_level(root, base["maxLevel"])
+                < level
+                <= root_max_level(root, site["maxLevel"])
                 and x < 2**level
                 and y < 2**level
-                and key == f"{face}/{level}/{x}/{y}"
+                and key == f"{root}/{level}/{x}/{y}"
                 and key not in addresses,
                 "Invalid or overlapping regional tile address.",
             )
@@ -302,46 +269,55 @@ def validate_regions(c, base):
             own.add(key)
         # A complete ancestor chain keeps progressive loading and fades intact.
         for key in own:
-            face, level, x, y = (int(part) for part in key.split("/"))
-            if level > base["maxLevel"] + 1:
+            root, level, x, y = (int(part) for part in key.split("/"))
+            if level > root_max_level(root, base["maxLevel"]) + 1:
                 _require(
-                    f"{face}/{level - 1}/{x >> 1}/{y >> 1}" in own,
+                    f"{root}/{level - 1}/{x >> 1}/{y >> 1}" in own,
                     "Regional tile is missing its parent.",
                 )
+
+
+def _source(source):
+    return isinstance(source, dict) and all(
+        isinstance(source.get(key), str) for key in ("id", "credit", "sourcePage")
+    )
 
 
 def validate_heights(m):
     tiles = m.get("tiles")
     _require(
-        m.get("version") == 1
+        m.get("version") == 2
         and _body(m)
-        and m.get("projection") == "normalized-cube"
+        and m.get("projection") == "geographic-polar"
         and m.get("format") == "uint16-le"
-        and m.get("scaleMeters") == HEIGHT_SCALE
-        and m.get("offsetMeters") == HEIGHT_OFFSET
+        and _number(m.get("scaleMeters"))
+        and m["scaleMeters"] > 0
+        and _number(m.get("offsetMeters"))
+        and isinstance(m.get("verticalDatum"), str)
         and _integer(m.get("tileSize"))
-        and 16 <= m["tileSize"] <= 256
+        and HEIGHT_TILE_SIZES[0] <= m["tileSize"] <= HEIGHT_TILE_SIZES[1]
         and _integer(m.get("gutter"))
-        and 2 <= m["gutter"] <= 8
+        and HEIGHT_GUTTERS[0] <= m["gutter"] <= HEIGHT_GUTTERS[1]
         and _integer(m.get("maxLevel"))
-        and 0 <= m["maxLevel"] <= 20
+        and 0 <= m["maxLevel"] <= MAX_LEVEL
         and _number(m.get("minMeters"))
         and _number(m.get("maxMeters"))
-        and m["minMeters"] >= HEIGHT_MIN
-        and m["maxMeters"] <= HEIGHT_MAX
+        and m["minMeters"] >= m["offsetMeters"]
+        and m["maxMeters"] <= 65535 * m["scaleMeters"] + m["offsetMeters"]
         and m["minMeters"] <= m["maxMeters"]
         and isinstance(tiles, dict)
-        and isinstance(m.get("sources"), list),
+        and isinstance(m.get("sources"), list)
+        and all(_source(source) for source in m["sources"]),
         "Unsupported height tile manifest.",
     )
-    _require(len(tiles) <= 200000, "Height catalog exceeds metadata budget.")
-    for face in range(6):
-        _require(f"{face}/0/0/0" in tiles, "Height catalog requires all six roots.")
+    _require(len(tiles) <= MAX_HEIGHT_TILES, "Height catalog exceeds metadata budget.")
+    for root in ROOTS:
+        _require(f"{root}/0/0/0" in tiles, "Height catalog requires every root.")
     for key, t in tiles.items():
         _require(KEY.match(key), "Invalid height tile address.")
         f, level, x, y = (int(part) for part in key.split("/"))
         _require(
-            level <= m["maxLevel"]
+            level <= root_max_level(f, m["maxLevel"])
             and x < 2**level
             and y < 2**level
             and key == f"{f}/{level}/{x}/{y}"
@@ -366,10 +342,14 @@ def validate_heights(m):
                 and parent["upper"] >= t["upper"],
                 f"Nonconservative height hierarchy: {key}",
             )
-    pages = m.get("pages")
-    if pages:
+    if "pages" in m or "pageLevel" in m:
+        pages = m.get("pages")
         _require(
-            _integer(m.get("pageLevel")) and 0 <= m["pageLevel"] <= 5 and len(pages) <= 8192,
+            "pages" in m
+            and _integer(m.get("pageLevel"))
+            and 0 <= m["pageLevel"] <= MAX_PAGE_LEVEL
+            and isinstance(pages, dict)
+            and len(pages) <= MAX_PAGES,
             "Invalid height page index.",
         )
         for key, page in pages.items():
@@ -389,11 +369,11 @@ def validate_heights(m):
                 and page["lower"] <= page["upper"],
                 f"Invalid height metadata page: {key}",
             )
-    validate_storage(m.get("storage"))
+    _validate_storage(m)
 
 
 def validate(document, base=None):
-    """Raise InvalidDocument unless the globe would accept `document`.
+    """Raise InvalidDocument unless `document` meets the contract.
 
     A regional catalog needs `base`, the imagery manifest it refines.
     """

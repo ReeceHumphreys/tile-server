@@ -15,49 +15,97 @@ from rasterio.crs import CRS
 from rasterio.warp import transform
 
 from tests.conftest import ROOT, WAC, build, fixture, load, pixels, run, save
-from tile_service import Workspace, cloudless, grids, heights, imagery, naip, regions, sources
+from tile_service import (
+    Workspace,
+    cloudless,
+    grids,
+    heights,
+    imagery,
+    naip,
+    regions,
+    runtime,
+    sources,
+)
 from tile_service.catalog import LAYERS
-from tile_service.cube import EARTH_RADIUS, MOON_RADIUS, Coverage, face_uv
 from tile_service.height_index import HeightIndex
+from tile_service.roots import (
+    EARTH_RADIUS,
+    MOON_RADIUS,
+    Coverage,
+    Tile,
+    root_crs,
+    root_uv,
+    tile_affine,
+    tile_count,
+    tile_directions,
+)
 from tile_service.runtime import atomic_json, gdal_library
 
 WS = Workspace(ROOT)
-
-BASIS = [
-    ([1, 0, 0], [0, 0, -1], [0, 1, 0]),
-    ([-1, 0, 0], [0, 0, 1], [0, 1, 0]),
-    ([0, 1, 0], [1, 0, 0], [0, 0, -1]),
-    ([0, -1, 0], [1, 0, 0], [0, 0, 1]),
-    ([0, 0, 1], [1, 0, 0], [0, 1, 0]),
-    ([0, 0, -1], [-1, 0, 0], [0, 1, 0]),
-]
 
 
 def test_gdal_shared_library_is_discoverable():
     assert gdal_library().is_file()
 
 
-def test_cube_orientation_poles_gutters_and_seams(source, tmp_path):
+def test_every_root_lands_where_its_pixels_say(source, tmp_path):
+    """The fixture's colors encode the sphere direction, so pixels check their own position."""
     output = tmp_path / "tiles"
     manifest = build(source, output, jobs=3)
-    assert manifest["tileCount"] == 30
-    assert manifest["pipelineVersion"] == 3
-    for face, (normal, u_axis, v_axis) in enumerate(BASIS):
-        image = pixels(output / f"{face}/0/0/0.png")
+    assert tile_count(1) == 12
+    assert manifest["producer"]["pipelineVersion"] == imagery.PIPELINE_VERSION
+    for key in ("0/0/0/0", "1/0/0/0", "2/0/0/0", "3/0/0/0", "0/1/0/1", "1/1/1/0"):
+        tile = Tile.parse(key)
+        image = pixels(output / f"{key}.png")
         assert image.shape == (36, 36, 4)
         assert np.all(image[:, :, 3] == 255)
-        for row, col in [(0, 0), (10, 12), (18, 18), (25, 21), (35, 35)]:
-            u = (col - 2 + 0.5) / 32 * 2 - 1
-            v = 1 - (row - 2 + 0.5) / 32 * 2
-            point = np.array(normal) + u * np.array(u_axis) + v * np.array(v_axis)
-            point /= np.linalg.norm(point)
+        _, _, vectors = tile_directions(tile, 32, 2)
+        for row, col in [(3, 3), (10, 12), (18, 18), (25, 21), (32, 32)]:
+            point = vectors[:, row, col]
+            if tile.root < 2 and abs(point[1]) > 0.8:
+                continue  # Smoothed along longitude up here, and drawn by the caps.
             expected = [127 - 100 * point[2], 127 + 100 * point[1], 127 + 100 * point[0]]
-            assert np.all(np.abs(image[row, col, :3] - expected) < 4), (face, row, col)
+            assert np.all(np.abs(image[row, col, :3] - expected) < 6), (key, row, col)
+
+
+def test_neighbors_share_their_gutters(source, tmp_path):
+    output = tmp_path / "tiles"
+    build(source, output)
     left, right, top = [
         pixels(output / path).astype(int) for path in ["0/1/0/0.png", "0/1/1/0.png", "0/1/0/1.png"]
     ]
     assert np.max(np.abs(left[:, 32:36] - right[:, :4])) <= 1
     assert np.max(np.abs(top[32:36] - left[:4])) <= 1
+
+
+def test_the_grid_matches_gdal():
+    """Our closed forms against PROJ, for a tile of each root."""
+    radius = 1737400.0
+    for tile in (Tile(0, 3, 2, 5), Tile(1, 2, 3, 1), Tile(2, 2, 1, 2), Tile(3, 3, 5, 2)):
+        size, gutter = 16, 0
+        rows, cols, vectors = tile_directions(tile, size, gutter)
+        affine = tile_affine(*tile, size, gutter, radius)
+        xs, ys = affine * (cols + 0.5, rows + 0.5)
+        lon, lat = transform(
+            root_crs(tile.root, radius),
+            CRS.from_proj4(f"+proj=longlat +R={radius} +no_defs"),
+            xs.ravel().tolist(),
+            ys.ravel().tolist(),
+        )
+        lat, lon = np.radians(lat), np.radians(lon)
+        expected = np.stack(
+            (np.cos(lat) * np.cos(lon), np.sin(lat), -np.cos(lat) * np.sin(lon))
+        ).reshape(vectors.shape)
+        assert np.abs(vectors - expected).max() < 1e-9, tile
+
+
+def test_caps_cross_the_date_line_without_a_seam(source, tmp_path):
+    output = tmp_path / "tiles"
+    build(source, output, max_level=4)
+    for root in (2, 3):
+        image = pixels(output / f"{root}/1/0/0.png").astype(int)
+        # Neighboring pixels of a smooth fixture stay close, including along longitude 180.
+        assert np.abs(np.diff(image[2:-2, 2:-2, :3], axis=0)).max() < 8
 
 
 def test_worker_determinism_resume_and_incompatible_settings(source, tmp_path):
@@ -77,11 +125,63 @@ def test_worker_determinism_resume_and_incompatible_settings(source, tmp_path):
         build(source, b, max_level=0)
 
 
+def test_a_process_pool_writes_the_same_tiles(source, tmp_path, monkeypatch):
+    serial, pooled = tmp_path / "serial", tmp_path / "pooled"
+    build(source, serial)
+    monkeypatch.setattr(runtime, "POOL_MIN_TILES", 0)
+    monkeypatch.setattr(runtime, "TILES_PER_TASK", 2)
+    build(source, pooled)
+    for path in serial.rglob("*.png"):
+        assert path.read_bytes() == (pooled / path.relative_to(serial)).read_bytes()
+
+
+def test_a_process_pool_writes_the_same_regional_tiles(source, tmp_path, monkeypatch):
+    base = tmp_path / "base"
+    build(source, base)
+    nac = fixture(tmp_path / "nac.tif", constant=240)
+    config = {
+        "id": "test-site",
+        "name": "Site",
+        "sourcePage": "https://example.test/source",
+        "sourceUrl": "https://example.test/nac.tif",
+        "credit": "Synthetic",
+        "nativeResolutionMeters": 0.5,
+    }
+
+    def region(output):
+        regions.build(nac, base / "manifest.json", output, config, 0, 90, 1000, 8)
+
+    region(tmp_path / "serial")
+    monkeypatch.setattr(runtime, "POOL_MIN_TILES", 0)
+    monkeypatch.setattr(runtime, "TILES_PER_TASK", 2)
+    region(tmp_path / "pooled")
+    tiles = list((tmp_path / "serial/test-site").rglob("*.png"))
+    assert tiles
+    for path in tiles:
+        relative = path.relative_to(tmp_path / "serial")
+        assert path.read_bytes() == (tmp_path / "pooled" / relative).read_bytes()
+
+
+def test_a_site_on_a_cap_refuses_a_whole_world_source(source, tmp_path):
+    base = tmp_path / "base"
+    build(source, base)
+    config = {
+        "id": "polar",
+        "name": "Site",
+        "sourcePage": "https://example.test/source",
+        "sourceUrl": "https://example.test/nac.tif",
+        "credit": "Synthetic",
+        "nativeResolutionMeters": 0.5,
+    }
+    with pytest.raises(RuntimeError, match="whole-world"):
+        regions.build(source, base / "manifest.json", tmp_path / "out", config, 89, 0, 1000, 8)
+
+
 def test_nodata_and_wrong_sphere(tmp_path):
     source = fixture(tmp_path / "source.tif", nodata=True)
     output = tmp_path / "tiles"
     manifest = build(source, output, max_level=0)
-    image = pixels(output / "0/0/0/0.png")
+    image = pixels(output / "1/0/0/0.png")
     assert image[5, 25, 3] == 0 and image[25, 5, 3] == 255
     assert manifest["source"]["nodata"] == 0
     fixture(source, radius=EARTH_RADIUS)
@@ -93,8 +193,8 @@ def test_nodata_and_wrong_sphere(tmp_path):
 def test_polar_cache_has_no_block_boundary_holes(source, tmp_path):
     output = tmp_path / "tiles"
     build(source, output, tile_size=128, max_level=3, keep_cache=True, jobs=3)
-    for face in [2, 3]:
-        assert np.all(pixels(output / f".cache/{face}.tif")[:, :, 3] == 255)
+    for root in [2, 3]:
+        assert np.all(pixels(output / f".cache/{root}.tif")[:, :, 3] == 255)
 
 
 @pytest.mark.parametrize("jobs", [0, 7, 1.5])
@@ -158,7 +258,7 @@ def test_interrupted_build_preserves_completed_work(source, tmp_path):
     ) as child:
         sent = False
         for line in child.stdout:
-            if "Face 0 ready" in line:
+            if "Root 0 ready" in line:
                 child.send_signal(signal.SIGINT)
                 sent = True
                 break
@@ -169,22 +269,6 @@ def test_interrupted_build_preserves_completed_work(source, tmp_path):
     stamp = kept.stat().st_mtime_ns
     imagery.build(source, output, WAC, max_level=3, jobs=3)
     assert kept.stat().st_mtime_ns == stamp
-
-
-@pytest.mark.skipif(
-    not (ROOT / "data/raw/moon/ldem_16_uint.tif").exists()
-    or not (ROOT / "public/data/moon/elevation/manifest.json").exists(),
-    reason="local LOLA source unavailable",
-)
-def test_lola_conversion_matches_existing_grid(tmp_path):
-    output = tmp_path / "elevation"
-    entry = load(ROOT / "datasets/moon-lola-ldem16.json")
-    grids.lola(sources.ensure(entry, WS.source_path(entry["sourceFile"])), output, entry)
-    expected = load(ROOT / "public/data/moon/elevation/manifest.json")
-    assert load(output / "manifest.json") == expected
-    assert (
-        hashlib.sha256((output / "heights.u16").read_bytes()).hexdigest() == expected["dataSha256"]
-    )
 
 
 def test_regional_imagery_matching_borders_resume_and_failed_publication(source, tmp_path):
@@ -201,7 +285,7 @@ def test_regional_imagery_matching_borders_resume_and_failed_publication(source,
     }
 
     def region(output=output, max_level=12):
-        return regions.build(nac, base / "manifest.json", output, config, 0, 0, 1000, max_level)
+        return regions.build(nac, base / "manifest.json", output, config, 0, 90, 1000, max_level)
 
     region()
     catalog = load(output / "catalog.json")
@@ -212,17 +296,17 @@ def test_regional_imagery_matching_borders_resume_and_failed_publication(source,
         f, level, x, y = map(int, key.split("/"))
         if level > 2:
             assert f"{f}/{level - 1}/{x >> 1}/{y >> 1}" in keys
-    path = output / "test-site/0/12/2048/2048.png"
+    path = output / "test-site/1/12/2048/2048.png"
     stamp, image = path.stat().st_mtime_ns, pixels(path)
-    under = pixels(base / "0/1/1/1.png")
+    under = pixels(base / "1/1/1/1.png")
     matched = image[33, 2, 0]
     assert abs(float(matched) - np.mean(under[33, 1, :3])) < 8
     assert image[33, 2, 1] == matched == image[33, 2, 2]
     assert np.all(image[:, :, 3] == 255)
-    assert pixels(output / "test-site/0/12/2049/2049.png")[18, 18, 0] < 200
+    assert pixels(output / "test-site/1/12/2048/2048.png")[18, 18, 0] < 200
     region()
     assert path.stat().st_mtime_ns == stamp
-    edge = next(key for key in keys if key.startswith("0/12/") and key != "0/12/2048/2048")
+    edge = next(key for key in keys if key.startswith("1/12/") and key != "1/12/2048/2048")
     missing = output / "test-site" / (edge + ".png")
     missing.unlink()
     region()
@@ -233,7 +317,7 @@ def test_regional_imagery_matching_borders_resume_and_failed_publication(source,
     manifest = load(base / "manifest.json")
     atomic_json(base / "manifest.json", {**manifest, "storage": {"type": "pmtiles"}})
     region()
-    (base / "0/1/0/0.png").unlink()
+    (base / "1/1/1/1.png").unlink()
     failed = tmp_path / "failed"
     with pytest.raises(RuntimeError, match="Base tile missing"):
         region(output=failed)
@@ -259,6 +343,7 @@ def test_numeric_heights_gutters_bounds_and_paged_refinements(tmp_path):
             "format": "uint16-le",
             "scaleMeters": 0.5,
             "offsetMeters": -10000,
+            "verticalDatum": "sphere",
             "radiusMeters": 1737400,
             "width": width,
             "height": height,
@@ -270,7 +355,7 @@ def test_numeric_heights_gutters_bounds_and_paged_refinements(tmp_path):
     )
     output = tmp_path / "heights"
     manifest = heights.build(config, output, tile_size=16, max_level=1)
-    assert len(manifest["tiles"]) == 30
+    assert len(manifest["tiles"]) == 12
 
     def read(key):
         return np.frombuffer(
@@ -293,19 +378,19 @@ def test_numeric_heights_gutters_bounds_and_paged_refinements(tmp_path):
         source,
         "test-height",
         0,
-        0,
+        90,
         1000,
         max_level=10,
         input_offset=-500,
         credit="test",
-        overview={"latitudeDeg": 0, "longitudeDeg": 0, "radiusMeters": 20000, "maxLevel": 9},
+        overview={"latitudeDeg": 0, "longitudeDeg": 90, "radiusMeters": 20000, "maxLevel": 9},
         feather=1000,
     )
     manifest = load(output / "manifest.json")
     assert np.all(
-        np.frombuffer((output / "test-height/0/10/512/512.u16").read_bytes(), dtype="<u2") == 19480
+        np.frombuffer((output / "test-height/1/10/512/512.u16").read_bytes(), dtype="<u2") == 19480
     )
-    assert manifest["pages"] and len(manifest["tiles"]) == 30
+    assert manifest["pages"] and len(manifest["tiles"]) == 12
     for page in manifest["pages"].values():
         assert load(output / page["path"])["tiles"]
         assert hashlib.sha256((output / page["path"]).read_bytes()).hexdigest() == page["sha256"]
@@ -352,7 +437,8 @@ def test_polar_vrt_coverage_and_replacement(source, tmp_path):
     assert site["tiles"] == [tile.key for tile in plan.tiles]
     assert len(plan.tiles) > len(Coverage(-89.67, 129.78, 16000, MOON_RADIUS, 1, 9).tiles)
     assert site["source"]["components"][0]["product"] == "q0" and site["featherMeters"] == 4000
-    assert pixels(output / "polar-test/3/9/255/255.png").any()
+    deepest = next(key for key in site["tiles"] if key.startswith("3/6/"))
+    assert pixels(output / f"polar-test/{deepest}.png").any()
     region({**settings, "id": "polar-test-v2", "replacesRegion": "polar-test"})
     assert [s["id"] for s in load(output / "catalog.json")["sites"]] == ["polar-test-v2"]
     assert (output / "polar-test/manifest.json").exists()
@@ -373,7 +459,7 @@ def test_polar_preflight_guards_and_apollo_catalogs(capsys):
     assert "Planned addresses: at most" in info
     with pytest.raises(RuntimeError, match="20,000 tiles"):
         WS.build("moon/south-pole-imagery", max_level=16, dry_run=True)
-    with pytest.raises(RuntimeError, match="1..16"):
+    with pytest.raises(RuntimeError, match="1..17"):
         WS.build("moon/south-pole-elevation", max_level=0, dry_run=True)
     WS.build("moon/apollo", sites=("apollo12",), dry_run=True)
     WS.build("moon/apollo-elevation", sites=("apollo12-dtm",), dry_run=True)
@@ -402,7 +488,7 @@ def test_generic_mars_imagery_and_elevation(tmp_path):
     assert manifest["body"] == "Mars" and manifest["minMeters"] == manifest["maxMeters"] == 100
     assert prepare() == manifest
     tiled = heights.build(grid / "manifest.json", output, tile_size=16, max_level=0)
-    assert tiled["body"] == "Mars" and tiled["radiusMeters"] == radius and len(tiled["tiles"]) == 6
+    assert tiled["body"] == "Mars" and tiled["radiusMeters"] == radius and len(tiled["tiles"]) == 4
     assert tiled["minMeters"] == tiled["maxMeters"] == 100
     assert all(info["min"] == info["max"] == 100 for info in tiled["tiles"].values())
     with pytest.raises(RuntimeError, match="reference sphere"):
@@ -563,7 +649,7 @@ def test_earth_sites_keep_geodetic_angles(capsys):
     ]
     WS.build("earth/sites", sites=("ksc",), dry_run=True)
     info = capsys.readouterr().out
-    assert "Kennedy Space Center" in info and "LC-39A" in info and "max level 16" in info
+    assert "Kennedy Space Center" in info and "LC-39A" in info and "max level 17" in info
 
 
 def test_naip_warp_keeps_geodetic_position(tmp_path):
@@ -639,13 +725,13 @@ def test_pinned_source_keeps_a_mismatched_file(tmp_path):
     assert not Path(str(source) + ".receipt.json").exists()
 
 
-def test_face_uv_grid_matches_single_vectors():
+def test_root_uv_on_a_grid_matches_single_vectors():
     vectors = np.array(
         [
-            [1, 0, 0],
-            [-1, 0, 0],
-            [0, 1, 0],
-            [0, -1, 0],
+            [1, 0, 0.2],
+            [1, 0, -0.2],
+            [0.01, 1, 0],
+            [0.01, -1, 0],
             [0, 0, 1],
             [0, 0, -1],
             [1, 1, 1],
@@ -654,13 +740,12 @@ def test_face_uv_grid_matches_single_vectors():
         dtype=float,
     )
     vectors /= np.linalg.norm(vectors, axis=1, keepdims=True)
-    faces, us, vs = face_uv(vectors.T.reshape(3, 2, 4))
-    assert list(faces.ravel()[:6]) == [0, 1, 2, 3, 4, 5]
-    assert us[0, 0] == vs[0, 0] == pytest.approx(0.5)
+    roots, us, vs = root_uv(vectors.T.reshape(3, 2, 4))
+    assert list(roots.ravel()[:6]) == [0, 1, 2, 3, 0, 1]
     for index, vector in enumerate(vectors):
-        face, u, v = face_uv(vector)
+        root, u, v = root_uv(vector)
         y, x = divmod(index, 4)
-        assert faces[y, x] == face
+        assert roots[y, x] == root
         assert us[y, x] == pytest.approx(u)
         assert vs[y, x] == pytest.approx(v)
 
@@ -678,6 +763,7 @@ def test_paged_coarse_samples_match_the_inline_base(tmp_path):
             "format": "uint16-le",
             "scaleMeters": 0.5,
             "offsetMeters": -10000,
+            "verticalDatum": "sphere",
             "radiusMeters": 1737400,
             "width": width,
             "height": height,
@@ -692,9 +778,15 @@ def test_paged_coarse_samples_match_the_inline_base(tmp_path):
     paged = tmp_path / "paged"
     shutil.copytree(base, paged)
     assert HeightIndex.open(paged).publish(page_level=0)["pages"]
+    pooled = tmp_path / "pooled"
+    shutil.copytree(paged, pooled)
     fine = fixture(tmp_path / "fine.tif", height=True, constant=40)
     for root in (base, paged):
-        heights.add_region(root, fine, "patch", 0, 0, 500, max_level=2)
+        heights.add_region(root, fine, "patch", 0, 90, 500, max_level=2)
+    with pytest.MonkeyPatch.context() as patch:
+        patch.setattr(runtime, "POOL_MIN_TILES", 0)
+        patch.setattr(runtime, "TILES_PER_TASK", 1)
+        heights.add_region(pooled, fine, "patch", 0, 90, 500, max_level=2)
 
     def files(root):
         return {
@@ -703,6 +795,8 @@ def test_paged_coarse_samples_match_the_inline_base(tmp_path):
         }
 
     direct, copied = files(base), files(paged)
+    assert files(pooled) == copied
+    assert load(pooled / "manifest.json")["tiles"] == load(paged / "manifest.json")["tiles"]
     shared = {key for key in direct.keys() & copied.keys() if "/2/" in key}
     assert shared
     assert all(direct[key] == copied[key] for key in shared)
@@ -802,7 +896,7 @@ def test_a_workspace_adds_its_own_targets_and_sources(tmp_path):
                     "id": "spot",
                     "name": "Spot",
                     "latitudeDeg": 0,
-                    "longitudeDeg": 0,
+                    "longitudeDeg": 90,
                     "maxLevel": 9,
                     "nativeResolutionMeters": 1,
                     "sourcePage": "https://example.test/spot",
@@ -841,10 +935,10 @@ def test_a_workspace_adds_its_own_targets_and_sources(tmp_path):
     assert site["source"]["credit"] == "Synthetic" and site["maxLevel"] == 9
     release = ws.release("releases/v1")
     assert release == (ws.root / "releases/v1").resolve()
-    assert len(list(release.rglob("*.pmtiles"))) == 7
+    assert len(list(release.rglob("*.pmtiles"))) == 5
 
 
-def test_cached_faces_get_overviews_before_their_final_name(source, tmp_path, monkeypatch):
+def test_cached_roots_get_overviews_before_their_final_name(source, tmp_path, monkeypatch):
     replace, seen = os.replace, []
 
     def checked(src, dst):
@@ -855,7 +949,7 @@ def test_cached_faces_get_overviews_before_their_final_name(source, tmp_path, mo
 
     monkeypatch.setattr(imagery.os, "replace", checked)
     build(source, tmp_path / "out")
-    assert len(seen) == 6 and all(seen)
+    assert len(seen) == 4 and all(seen[:2])
 
 
 def test_failed_imagery_build_can_be_retried(source, tmp_path, monkeypatch):

@@ -19,7 +19,7 @@
   "sourceSizeNote": "Verified 12,742,411,029 bytes (11.87 GiB); generated tiles require additional disk space.",
   "tileSize": 256,
   "gutter": 2,
-  "maxLevel": 7,
+  "maxLevel": 8,
   "expectedBytes": 12742411029,
   "sourceETag": "\"efb446a3deef9aea7e8aba2e13bfbbaa-1520\""
 }

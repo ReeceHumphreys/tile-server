@@ -21,7 +21,7 @@
       "layer": "heights",
       "grid": "moon/elevation",
       "tileSize": 128,
-      "maxLevel": 4,
+      "maxLevel": 5,
       "description": "Global lunar height tiles"
     },
     "moon/apollo": {
@@ -81,7 +81,7 @@
       "layer": "heights",
       "grid": "mars/elevation",
       "tileSize": 128,
-      "maxLevel": 5,
+      "maxLevel": 6,
       "description": "Global Mars height tiles"
     },
     "earth/s2cloudless-2020-z7": {
@@ -92,6 +92,17 @@
         "zoom": 7
       },
       "description": "Global EOxCloudless 2020 imagery"
+    },
+    "earth/land": {
+      "layer": "imagery",
+      "source": {
+        "type": "polygons",
+        "dataset": "earth-land.json",
+        "width": 32768,
+        "fill": 160,
+        "background": 24
+      },
+      "description": "Natural Earth land as a two-tone map"
     },
     "earth/elevation": {
       "layer": "grid",
@@ -108,8 +119,18 @@
       "layer": "heights",
       "grid": "earth/elevation",
       "tileSize": 128,
-      "maxLevel": 5,
+      "maxLevel": 6,
       "description": "Global Earth height tiles"
+    },
+    "earth/starbase-elevation": {
+      "layer": "height-regions",
+      "base": "earth/elevation-tiles",
+      "sites": "earth-elevation-sites.json",
+      "source": {
+        "type": "download",
+        "raw": "earth/elevation-sites"
+      },
+      "description": "Starbase 1 m USGS lidar DEM into earth/elevation-tiles"
     },
     "earth/sites": {
       "layer": "imagery-regions",

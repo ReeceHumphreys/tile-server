@@ -113,7 +113,7 @@ def ensure(entry, path=None):
         download(url, part, etag or "", entry.get("sourceLastModified") or "")
     if part.stat().st_size != expected:
         raise RuntimeError("Download size differs from the catalog; rerun to resume or review.")
-    if not _tiff(part):
+    if out.suffix != ".geojson" and not _tiff(part):
         raise RuntimeError("Download is not TIFF; partial file retained for inspection.")
     digest = sha256(part)
     if pinned and digest != pinned:
@@ -335,6 +335,40 @@ class NaipCrop:
         }
 
 
+class Polygons:
+    """One pinned GeoJSON download, drawn as a grey map on the body's sphere."""
+
+    def __init__(self, entry, geojson, raw, width, fill, background):
+        self.source = Download(entry, geojson)
+        self.entry = entry
+        self.width = width
+        self.fill = fill
+        self.background = background
+        # The name holds what the pixels depend on, so a new look never reuses an old raster.
+        self.path = Path(raw) / f"{entry['id']}-{width}-{fill}-{background}.tif"
+
+    def describe(self):
+        return f"{self.source.describe()}\nDrawn at width {self.width}: {self.path}"
+
+    def fetch(self):
+        from tile_service import polygons
+
+        geojson = self.source.fetch()
+        if self.path.exists():
+            return self.path
+        return polygons.draw(
+            geojson,
+            self.path,
+            radius=self.entry["radiusMeters"],
+            width=self.width,
+            fill=self.fill,
+            background=self.background,
+        )
+
+    def provenance(self):
+        return self.source.provenance()
+
+
 class Local:
     """A raster already on disk, e.g. `build --source`."""
 
@@ -357,7 +391,7 @@ class Local:
 def open_source(ws, spec, *, site=None, radius=None, extent=None, max_level=None):
     """The Source adapter a catalog `source` spec describes, placed in workspace `ws`.
 
-    `spec["type"]` is download, mosaic, wmts or naip. A download takes its
+    `spec["type"]` is download, mosaic, wmts, naip or polygons. A download takes its
     entry from `spec["dataset"]`, inline fields, or the site itself, and lives
     at the entry's `sourceFile` or `<raw>/<id>.tif` under `ws.sources`.
     """
@@ -379,4 +413,10 @@ def open_source(ws, spec, *, site=None, radius=None, extent=None, max_level=None
         return Wmts(entry, spec["zoom"], ws.source_path(entry["sourceFile"]))
     if kind == "naip":
         return NaipCrop(site, extent, max_level, ws.source_path(spec.get("raw", "earth/sites")))
+    if kind == "polygons":
+        entry = ws.dataset(spec["dataset"])
+        geojson = ws.source_path(entry["sourceFile"])
+        return Polygons(
+            entry, geojson, geojson.parent, spec["width"], spec["fill"], spec["background"]
+        )
     raise RuntimeError(f"Unknown source type {kind!r}")

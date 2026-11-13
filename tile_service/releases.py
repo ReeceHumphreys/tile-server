@@ -1,6 +1,6 @@
-"""Releases: pack cube tiles into PMTiles, then export a self-contained static release.
+"""Releases: pack tiles into PMTiles, then export a self-contained static release.
 
-PMTiles coordinates remain face-local, bottom-left Y-up: these are not Mercator
+PMTiles coordinates remain root-local, bottom-left Y-up: these are not Mercator
 maps. Only the final atomic manifest/catalog replacement switches readers to
 archives. A release holds packed documents, their archives and height pages;
 never raw rasters or loose tiles.
@@ -21,6 +21,7 @@ from pmtiles.writer import Writer
 from tile_service import documents
 from tile_service.documents import PROFILE
 from tile_service.height_index import HeightIndex
+from tile_service.roots import ROOTS, root_max_level
 from tile_service.runtime import atomic_json, check, log, read_json, sha256
 from tile_service.tile_store import ADDRESS
 
@@ -55,17 +56,15 @@ def validate_all(found):
         try:
             documents.validate(document, base)
         except documents.InvalidDocument as error:
-            raise RuntimeError(f"The globe would reject {path}: {error}") from None
+            raise RuntimeError(f"Not a valid document: {path}: {error}") from None
 
 
 def _entries(document, root):
     if documents.kind(document) not in ("imagery", "heights"):
-        raise RuntimeError("PMTiles packaging requires a normalized-cube manifest")
+        raise RuntimeError("PMTiles packaging requires a geographic-polar manifest")
     if document.get("format") == "png":
-        if document.get("addressing", {}).get("template") != "{face}/{level}/{x}/{y}.png":
-            raise RuntimeError("Unsupported imagery address template")
-        for f in range(6):
-            for z in range(document["maxLevel"] + 1):
+        for f in ROOTS:
+            for z in range(root_max_level(f, document["maxLevel"]) + 1):
                 for x in range(1 << z):
                     for y in range(1 << z):
                         yield f"{f}/{z}/{x}/{y}.png", None
@@ -91,15 +90,17 @@ def _storage(root, entries, metadata):
         check()
         match = ADDRESS.fullmatch(path)
         if not match:
-            raise RuntimeError(f"Invalid cube tile path: {path}")
-        prefix, face, z, x, y, extension = match.groups()
+            raise RuntimeError(f"Invalid tile path: {path}")
+        prefix, tile_root, z, x, y, extension = match.groups()
         z, x, y = int(z), int(x), int(y)
         if z > 20 or x >= 1 << z or y >= 1 << z:
-            raise RuntimeError(f"Invalid cube tile coordinates: {path}")
+            raise RuntimeError(f"Invalid tile coordinates: {path}")
         source = _local(root, path)
         if not source.is_file():
             raise RuntimeError(f"Missing tile: {source}")
-        groups[prefix + face].append((zxy_to_tileid(z, x, y), source, expected_hash, extension))
+        groups[prefix + tile_root].append(
+            (zxy_to_tileid(z, x, y), source, expected_hash, extension)
+        )
     if not groups:
         raise RuntimeError("Cannot publish an empty tileset")
     out = root / "pmtiles"
@@ -208,7 +209,7 @@ def pack_document(path):
     metadata = {k: document[k] for k in ("body", "radiusMeters", "id", "format") if k in document}
     changed = False
     if "sites" in document:
-        # Each regional site is an independently replaceable group of face archives.
+        # Each regional site is an independently replaceable group of root archives.
         for site in document["sites"]:
             check()
             site_root = _local(root, site["id"])
@@ -235,7 +236,7 @@ def pack(root):
     """Pack every tileset and regional catalog under `root`."""
     selected = [path for path, _ in published(root)]
     if not selected:
-        raise RuntimeError(f"No cube tilesets found under {root}")
+        raise RuntimeError(f"No tilesets found under {root}")
     for path in selected:
         pack_document(path)
     return selected

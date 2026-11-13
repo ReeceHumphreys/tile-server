@@ -1,0 +1,7561 @@
+[
+ {
+  "name": "imagery: smallest valid manifest",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": true
+ },
+ {
+  "name": "imagery: unknown fields are ignored",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "future": {
+    "a": 1
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "imagery: packed",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "0": "pmtiles/0.pmtiles"
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "imagery: tileSize at its limit 1",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 1,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": true
+ },
+ {
+  "name": "imagery: tileSize at its limit 2048",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 2048,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": true
+ },
+ {
+  "name": "imagery: gutter at its limit 1",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 1,
+   "maxLevel": 4
+  },
+  "valid": true
+ },
+ {
+  "name": "imagery: gutter at its limit 16",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 16,
+   "maxLevel": 4
+  },
+  "valid": true
+ },
+ {
+  "name": "imagery: maxLevel at its limit 0",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 0
+  },
+  "valid": true
+ },
+ {
+  "name": "imagery: maxLevel at its limit 20",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 20
+  },
+  "valid": true
+ },
+ {
+  "name": "imagery: missing version",
+  "type": "imagery",
+  "document": {
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: missing id",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: missing body",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: missing radiusMeters",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: missing projection",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: missing format",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: missing colorSpace",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: missing tileSize",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: missing gutter",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: missing maxLevel",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: version is 1",
+  "type": "imagery",
+  "document": {
+   "version": 1,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: version is 3",
+  "type": "imagery",
+  "document": {
+   "version": 3,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: id is ''",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: id is 1",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: body is ' '",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": " ",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: radiusMeters is 0",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 0,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: radiusMeters is '1737400'",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": "1737400",
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: projection is 'cube'",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "cube",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: format is 'jpeg'",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "jpeg",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: colorSpace is 'linear'",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "linear",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: tileSize is 0",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 0,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: tileSize is 2049",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 2049,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: tileSize is 1.5",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 1.5,
+   "gutter": 2,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: gutter is 0",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 0,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: gutter is 17",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 17,
+   "maxLevel": 4
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: maxLevel is -1",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": -1
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: maxLevel is 21",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 21
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: maxLevel is '4'",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": "4"
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: title is null",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "title": null
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: coverage is null",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "coverage": null
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: quantity is null",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "quantity": null
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: nativeResolutionMeters is null",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "nativeResolutionMeters": null
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: source is null",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "source": null
+  },
+  "valid": false
+ },
+ {
+  "name": "imagery: producer is null",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "producer": null
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: null is not absent",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": null
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: dots inside a path",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "v1.2/0": "v1.2/0-a.b.pmtiles"
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "storage: wrong type",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "mbtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "0": "pmtiles/0.pmtiles"
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: wrong profile",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "x",
+    "archives": {
+     "0": "pmtiles/0.pmtiles"
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: no archives",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {}
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: root out of range",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "4": "a.pmtiles"
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: path escapes",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "0": "../a.pmtiles"
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: hidden path part",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "0": ".a/b.pmtiles"
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: absolute path",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "0": "/a.pmtiles"
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: URL as a path",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "0": "https:a.pmtiles"
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: path is not an archive",
+  "type": "imagery",
+  "document": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "0": "a.png"
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: smallest valid manifest",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: packed",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "storage": {
+    "type": "pmtiles",
+    "profile": "geographic-polar-v1",
+    "archives": {
+     "0": "pmtiles/0.pmtiles"
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: dots inside a path",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "v1.2/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: empty pages",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": 6,
+   "pages": {}
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: a cap at its deepest level",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/1/0/0": {
+     "path": "global/2/1/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: other encoding",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.25,
+   "offsetMeters": -5,
+   "verticalDatum": "ellipsoid",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: tileSize at its limit 16",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 16,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: tileSize at its limit 256",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: gutter at its limit 2",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: gutter at its limit 8",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 8,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: paged",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": 0,
+   "pages": {
+    "0/0/0/0": {
+     "path": "metadata/0.json",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": true
+ },
+ {
+  "name": "heights: missing version",
+  "type": "heights",
+  "document": {
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing body",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing radiusMeters",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing projection",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing format",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing scaleMeters",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing offsetMeters",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing verticalDatum",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing tileSize",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing gutter",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing maxLevel",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing minMeters",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing maxMeters",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing sources",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: missing tiles",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ]
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: scaleMeters is 0",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: scaleMeters is '0.5'",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": "0.5",
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: offsetMeters is '0'",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": "0",
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: verticalDatum is 1",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": 1,
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: tileSize is 15",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 15,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: tileSize is 257",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 257,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: gutter is 1",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 1,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: gutter is 9",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 9,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: maxLevel is 21",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 21,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: minMeters is -20000",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": -20000,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: maxMeters is 30000",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 30000,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: sources is {}",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": {},
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: minMeters above maxMeters",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 11,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "storage: null in heights",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "storage": null
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a source that isn't an object",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    1
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a source missing its fields",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {}
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a source with a null credit",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "a",
+     "credit": null,
+     "sourcePage": ""
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: every root is required",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a tile needs its parent",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/2/0/0": {
+     "path": "a/0/2/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a tile stays inside its parent",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/1/0/0": {
+     "path": "a/0/1/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 11
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a geographic tile deeper than maxLevel",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/1/0/0": {
+     "path": "a/0/1/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/2/0/0": {
+     "path": "a/0/2/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/3/0/0": {
+     "path": "a/0/3/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/4/0/0": {
+     "path": "a/0/4/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/5/0/0": {
+     "path": "a/0/5/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a cap tile deeper than its root allows",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/1/0/0": {
+     "path": "a/2/1/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/2/0/0": {
+     "path": "a/2/2/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: an address past the root's edge",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/1/2/0": {
+     "path": "a/0/1/2/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a noncanonical address",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/01/0/0": {
+     "path": "a/0/1/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a bad path",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/1/0/0": {
+     "path": "a/0/1/0/0.png",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a bad hash",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/1/0/0": {
+     "path": "a/0/1/0/0.u16",
+     "sha256": "abc",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: min above max",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "0/1/0/0": {
+     "path": "a/0/1/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 9,
+     "max": 8,
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: pageLevel above 6",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": 7,
+   "pages": {
+    "0/0/0/0": {
+     "path": "metadata/0.json",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: pages is null",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": 0,
+   "pages": null
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: pageLevel is null",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": null,
+   "pages": {}
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: pageLevel without pages",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": 0
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: pages without pageLevel",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pages": {}
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a page path that isn't JSON",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": 0,
+   "pages": {
+    "0/0/0/0": {
+     "path": "a.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a page at the wrong level",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": 1,
+   "pages": {
+    "0/0/0/0": {
+     "path": "metadata/0.json",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a page without its tile",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": 1,
+   "pages": {
+    "0/1/0/0": {
+     "path": "metadata/0.json",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "lower": 0,
+     "upper": 10
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "heights: a page outside its tile",
+  "type": "heights",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "uint16-le",
+   "scaleMeters": 0.5,
+   "offsetMeters": -10000,
+   "verticalDatum": "sphere",
+   "tileSize": 128,
+   "gutter": 2,
+   "maxLevel": 4,
+   "minMeters": 0,
+   "maxMeters": 10,
+   "sources": [
+    {
+     "id": "global",
+     "credit": "Sample",
+     "sourcePage": "https://example.test/"
+    }
+   ],
+   "tiles": {
+    "0/0/0/0": {
+     "path": "global/0/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "1/0/0/0": {
+     "path": "global/1/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "2/0/0/0": {
+     "path": "global/2/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    },
+    "3/0/0/0": {
+     "path": "global/3/0/0/0.u16",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "min": 0,
+     "max": 10,
+     "lower": 0,
+     "upper": 10
+    }
+   },
+   "pageLevel": 0,
+   "pages": {
+    "0/0/0/0": {
+     "path": "metadata/0.json",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "lower": 0,
+     "upper": 11
+    }
+   }
+  },
+  "valid": false
+ },
+ {
+  "name": "regions: a site",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": true,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: no sites",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": []
+  },
+  "valid": true,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a cap site",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "cap",
+     "name": "Sample",
+     "latitudeDeg": 85,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "2/2/1/1",
+      "2/3/2/2"
+     ]
+    }
+   ]
+  },
+  "valid": true,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a packed site",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ],
+     "storage": {
+      "type": "pmtiles",
+      "profile": "geographic-polar-v1",
+      "archives": {
+       "0": "pmtiles/0.pmtiles"
+      }
+     }
+    }
+   ]
+  },
+  "valid": true,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site maxLevel at its limit",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 17,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": true,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: version is 2",
+  "type": "regions",
+  "document": {
+   "version": 2,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: body is 'Mars'",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Mars",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: radiusMeters is 1",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: baseId is 'x'",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "x",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: baseMaxLevel is 3",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 3,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: tileSize is 128",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 128,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: gutter is 1",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 1,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: sites is {}",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": {}
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: more sites than allowed",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "s0",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s1",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s2",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s3",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s4",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s5",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s6",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s7",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s8",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s9",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s10",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s11",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s12",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s13",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s14",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s15",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s16",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s17",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s18",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s19",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s20",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s21",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s22",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s23",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s24",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s25",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s26",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s27",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s28",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s29",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s30",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s31",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s32",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s33",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s34",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s35",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s36",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s37",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s38",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s39",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s40",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s41",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s42",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s43",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s44",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s45",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s46",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s47",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s48",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s49",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s50",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s51",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s52",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s53",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s54",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s55",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s56",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s57",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s58",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s59",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s60",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s61",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s62",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s63",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "s64",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site missing id",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site missing name",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site missing latitudeDeg",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site missing longitudeDeg",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site missing radiusMeters",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site missing maxLevel",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site missing source",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site missing tiles",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     }
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site id is 'Not Valid'",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "Not Valid",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site latitudeDeg is 91",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 91,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site longitudeDeg is 181",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 181,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site radiusMeters is 0",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 0,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site maxLevel is 4",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 4,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site maxLevel is 18",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 18,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: site source is {}",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {},
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "storage: null in a site",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ],
+     "storage": null
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: repeated site id",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    },
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": []
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a tile in two sites",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    },
+    {
+     "id": "other",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a tile no deeper than the base",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/4/1/10"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a tile deeper than the site",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3/20",
+      "1/6/6/40",
+      "1/7/12/80"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a tile missing its parent",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/6/6/40"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a bad address",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/3"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: an address past the root's edge",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/5/32/0"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a noncanonical address",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "site",
+     "name": "Sample",
+     "latitudeDeg": 10,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "1/05/3/20"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a cap tile deeper than the site on its root",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "cap",
+     "name": "Sample",
+     "latitudeDeg": 85,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "2/2/1/1",
+      "2/3/2/2",
+      "2/4/4/4"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ },
+ {
+  "name": "regions: a cap tile no deeper than the base on its root",
+  "type": "regions",
+  "document": {
+   "version": 1,
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "baseId": "sample",
+   "baseMaxLevel": 4,
+   "tileSize": 256,
+   "gutter": 2,
+   "sites": [
+    {
+     "id": "cap",
+     "name": "Sample",
+     "latitudeDeg": 85,
+     "longitudeDeg": 20,
+     "radiusMeters": 2000,
+     "maxLevel": 6,
+     "source": {
+      "sourcePage": "https://example.test/",
+      "credit": "Sample",
+      "nativeResolutionMeters": 1
+     },
+     "tiles": [
+      "2/1/0/0"
+     ]
+    }
+   ]
+  },
+  "valid": false,
+  "base": {
+   "version": 2,
+   "id": "sample",
+   "body": "Moon",
+   "radiusMeters": 1737400,
+   "projection": "geographic-polar",
+   "format": "png",
+   "colorSpace": "srgb",
+   "tileSize": 256,
+   "gutter": 2,
+   "maxLevel": 4
+  }
+ }
+]
